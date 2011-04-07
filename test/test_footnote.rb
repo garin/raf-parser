@@ -12,7 +12,7 @@ class TestRafFootnote < Test::Unit::TestCase
     str = '(([aaa]))'
     res = @raf.parse(str)
     assert_kind_of Raf::Footnote, res[0]
-    assert_equal '<Footnote>Contents:aaa,Id:1</Footnote>', res[0].apply
+    assert_equal '<Footnote>aaa</Footnote>', res[0].apply
     assert_equal "aaa", @raf.index[:footnote][0][:content][0].apply
   end
 
@@ -23,10 +23,10 @@ class TestRafFootnote < Test::Unit::TestCase
     assert_kind_of Raf::Footnote, res[0]
     assert_kind_of Raf::Footnote, res[1]
     assert_kind_of Raf::Footnote, res[2]
-    
+
     assert_equal "aaa", @raf.index[:footnote][0][:content][0].apply
     assert_equal "bbb", @raf.index[:footnote][1][:content][0].apply
-    assert_equal "ccc", @raf.index[:footnote][2][:content][0].apply    
+    assert_equal "ccc", @raf.index[:footnote][2][:content][0].apply
   end
 
   def test_footnote_in_element

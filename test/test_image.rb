@@ -11,16 +11,16 @@ class TestRafImage < Test::Unit::TestCase
   def test_image_is_image
     str = '(($aaa.png$))'
     res = @raf.parse(str)
-    assert_kind_of Raf::Strike, res[0]
+    assert_kind_of Raf::Image, res[0]
   end
 
   def test_image_apply
-    str1 = '(($aaa.png$))'    
+    str1 = '(($aaa.png$))'
     res = @raf.parse(str1)
     assert_respond_to res[0], 'apply'
     assert_equal '<Image>aaa.png</Image>', res[0].apply
 
-    str2 = '(($AAA|aaa.png$))'    
+    str2 = '(($AAA|aaa.png$))'
     res = @raf.parse(str2)
     assert_respond_to res[0], 'apply'
     assert_equal '<Image>AAA|aaa.png</Image>', res[0].apply
@@ -36,7 +36,7 @@ class TestRafImage < Test::Unit::TestCase
 #    res = @raf.parse(str2)
 #    assert_equal [Raf::Plain, Raf::Image, Raf::Plain], res[0].contents.map {|c| c.class }
 #    assert_equal '<Image>a<Image>a</Image>a</Image>', res[0].apply
-    
+
 #    str3 = '(($a((*a*))a$))'
 #    res = @raf.parse(str3)
 #    assert_equal [Raf::Plain, Raf::Emphasis, Raf::Plain], res[0].contents.map {|c| c.class }

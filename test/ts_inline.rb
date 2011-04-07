@@ -5,4 +5,4 @@ require "test_italic"
 require "test_strike"
 require "test_ruby"
 require "test_verb"
-
+require "test_image"
