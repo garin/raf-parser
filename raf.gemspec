@@ -10,20 +10,59 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["garin"]
   s.date = %q{2011-04-07}
+  s.default_executable = %q{raf2html}
   s.description = %q{raf is simple document format}
   s.email = %q{garin54@gmail.com}
+  s.executables = ["raf2html"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
   ]
   s.files = [
     ".document",
+    "COPYING",
     "Gemfile",
+    "Gemfile.lock",
+    "History.rdoc",
     "LICENSE.txt",
     "README.rdoc",
     "Rakefile",
     "VERSION",
-    "test/helper.rb"
+    "bin/raf2html",
+    "lib/default.css",
+    "lib/parserutility.rb",
+    "lib/raf2html.rb",
+    "lib/raf2html_element.rb",
+    "lib/rafblockparser.output",
+    "lib/rafblockparser.ry",
+    "lib/rafblockparser.tab.rb",
+    "lib/rafelement.rb",
+    "lib/rafinlineparser.output",
+    "lib/rafinlineparser.ry",
+    "lib/rafinlineparser.tab.rb",
+    "raf.gemspec",
+    "test/helper.rb",
+    "test/test_descblock.rb",
+    "test/test_emphasis.rb",
+    "test/test_erb.rb",
+    "test/test_footnote.rb",
+    "test/test_headline.rb",
+    "test/test_headline_and_itemlist.rb",
+    "test/test_helper.rb",
+    "test/test_image.rb",
+    "test/test_italic.rb",
+    "test/test_itemlistblock.rb",
+    "test/test_numlistblock.rb",
+    "test/test_paragraph.rb",
+    "test/test_quoteblock.rb",
+    "test/test_reference.rb",
+    "test/test_ruby.rb",
+    "test/test_strike.rb",
+    "test/test_tableblock.rb",
+    "test/test_verb.rb",
+    "test/ts_block.rb",
+    "test/ts_inline.rb",
+    "test/ts_rafparser.rb"
   ]
   s.homepage = %q{http://github.com/garin/raf}
   s.licenses = ["GPL"]
