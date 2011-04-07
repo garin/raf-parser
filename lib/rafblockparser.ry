@@ -1,0 +1,356 @@
+class BlockParser
+  token HEADER WHITELINE HEADLINE PLAIN DESCLINE_TITLE DESCLINE QUOTE INDENT DEDENT ITEMLIST ITEMLISTCONTINUE NUMLIST TABLELINE
+  preclow
+    nonassoc DUMMY
+  prechigh
+  options no_result_var
+
+  rule
+  document  : blocks{ val[0].compact }
+
+  blocks : block { val }
+         | blocks block { [val[0], val[1]].flatten }
+
+  block : header
+        | paragraph { val[0] }
+        | quote_block
+        | itemlist_blocks { ItemList.new(val[0].flatten) }
+        | numlist_blocks  { NumList.new(val[0].flatten) }
+        | desc_block
+        | table_block
+        | headline
+        | WHITELINE { WhiteLine.new }
+
+  # ----- header
+  header : HEADER {
+             name, val = val[0].split(":",2)
+             if name.nil? or val.nil?
+             else
+               @info.update({name.strip.to_sym => val.strip })
+             end
+             nil }
+
+  # ----- headline
+  headline : HEADLINE { # val[0] is like [level, title, index]
+                        title = val[0][1]
+                        level = val[0][0]
+                        if level == 1
+                          @info[:subject] ||= title
+                        else
+                          @head_index.update(level)
+                        end
+
+                        @index[:head] ||= []
+                        @index[:head] << {:title => title, :level => level, :index => @head_index.to_s}
+                        HeadLine.new([level, title, @index[:head].size, @head_index.to_s]) }
+  # ----- paragraph
+  paragraph : plain_texts { Paragraph.new @inline_parser.parse(val) }
+
+  plain_texts : PLAIN { val[0] }
+              | plain_texts PLAIN { val[0] + val[1] }
+
+  # ----- desc
+  desc_block : DESCLINE_TITLE desclines {
+                 if val[1].nil?
+                   lines = [Plain.new("")]
+                 else
+                   lines = @inline_parser.parse(val[1])
+                 end
+                 Desc.new([val[0], lines])
+               }
+
+
+  desclines : DESCLINE { val[0] }
+            | desclines DESCLINE { val[0] + val[1] }
+            |
+
+
+  # ----- quote
+  quote_block : quotes { qu = val[0].strip  ; Quote.new([qu]) unless qu.empty? }
+
+  quotes      : QUOTE { val[0] }
+              | quotes QUOTE { val[0] + val[1] }
+
+  # ----- quote end
+  # ----- itemlist
+  itemlist_blocks : itemlist_block { val[0] }
+                  | itemlist_blocks itemlist_block { val[0] << val[1] }
+
+  itemlist_block  : itemlists { val[0] }
+                  | itemlist_indent_blocks { val[0]  }
+
+  itemlist_indent_blocks : INDENT itemlist_blocks DEDENT { val }
+
+  itemlists : itemlistitems {[PlainTextBlock.new(@inline_parser.parse(val[0]))]}
+            | itemlists itemlistitems { val[0] << PlainTextBlock.new(@inline_parser.parse(val[1])) }
+
+  itemlistitems : ITEMLIST { val[0] }
+                | ITEMLIST itemlist_continues { val[0] + val[1] }
+
+  itemlist_continues : ITEMLISTCONTINUE { "\n" + val[0]  }
+                     | itemlist_continues ITEMLISTCONTINUE { val[0] + "\n" + val[1] }
+
+  # ----- itemlist end
+  # ----- numlist
+  numlist_blocks : numlist_block { val[0] }
+                  | numlist_blocks numlist_block { val[0] << val[1] }
+
+  numlist_block  : numlists { val[0] }
+                  | numlist_indent_blocks { val[0]  }
+
+  numlist_indent_blocks : INDENT numlist_blocks DEDENT { val }
+
+  numlists : NUMLIST { [PlainTextBlock.new(@inline_parser.parse(val[0]))] }
+           | numlists NUMLIST { val[0] << PlainTextBlock.new(@inline_parser.parse(val[1])) }
+
+  # ----- numlist end
+
+  # ----- tableblock
+  table_block : tablelines { Table.new(val[0]) }
+
+  tablelines : TABLELINE {  val }
+             | tablelines TABLELINE { val[0] << val[1] }
+
+  # ----- tableblock end
+end  # end of rule
+
+---- inner
+include ParserUtility
+
+class Line
+  def initialize(line)
+    @content = line
+#    @indent  = get_line_indent(line)
+    #    @type    = nil
+  end
+  attr_reader :indent, :no
+  attr_accessor :type, :content
+  alias indent_size indent
+
+  def get_line_indent
+    return 0 if @content.nil?
+    @content =~ /(\s*)/
+    $1.size
+  end
+  alias indent get_line_indent
+end
+
+
+def initialize
+  @inline_parser = InlineParser.new
+  @info = {}
+  @inline_index = @inline_parser.index
+  @index = {}
+  @head_index = HeadIndex.new
+end
+attr_reader :info, :inline_index, :index
+
+def parse(src)
+  @no = 0
+  @src = src.to_a
+  @line = Line.new("")
+  @line_pre = @line.dup
+  @indent_stack = []
+  @current_indent = 0
+  @current_type = :header
+  @yydebug = true
+  @view_token_type = false
+  do_parse
+end
+
+def on_error(token_id, value, stack)
+  lineno = @src[0..@no].to_s.split("\n").size
+  raise Racc::ParseError,
+        "rafblockpaser: line #{lineno}: syntax error on #{value.inspect}"
+end
+
+def next_token
+  @line_pre = @line.dup
+  @line = Line.new(@src[@no])
+#  puts "line: #{@line.content}" if @view_token_type
+  case @line.content
+  when nil
+      @line.content = ""
+      if_current_indent_equal("") do
+        puts "b: false: #{@line.content}" if @view_token_type
+        [false, false]
+      end
+  when /^$/
+    @line.content = ""
+    if_current_indent_equal("") do
+      if @current_type == :quote
+        puts "b: QUOTE: #{@line.content}" if @view_token_type
+        [:QUOTE, "\n"]
+      elsif @current_type == :descline
+        puts "b: DESCLINE: #{@line.content}" if @view_token_type
+        [:DESCLINE, " "]
+      else
+        puts "b: WHITELINE: #{@line.content}" if @view_token_type
+        @current_type = :whiteline
+        [:WHITELINE, :WHITELINE]
+      end
+    end
+  when /^\#(.*)/  # comment line
+    @no += 1
+    if @current_type == :header
+      puts "b: HEADER: #{@line.content}" if @view_token_type
+      [:HEADER, $1.strip]
+    else
+      puts "b: COMMENT(noop): #{@line.content}" if @view_token_type
+      next_token
+    end
+  when /^(={1,4})(?!=)\s*(?=\S)/, /^(\+{1,2})(?!\+)\s*(?=\S)/
+    rest = $'                    # '
+    rest.strip!
+    mark = $1
+    #    if_current_indent_equal("") do
+    if_current_indent_equal(@line.indent) do
+      @current_type = :headline
+      puts "b: HEADLINE: #{@line.content}" if @view_token_type
+      [:HEADLINE, [mark_to_level(mark), rest]]
+    end
+  when /^\s\s+(.*)/    # type == quote
+    puts "b: 2 WHITE SPACE(#{@current_type}) : #{@line.content}" if @view_token_type
+    case @current_type
+    when :itemlist
+      if @line.content =~ /^(\s*)(\*)(\s+)(.*)/
+        line = $4.strip
+        if line.empty?
+          @no += 1
+          next_token
+        else
+          if_current_indent_equal(@line.indent) do
+            puts "b: ITEMLIST: [#{line}]" if @view_token_type
+            @current_type = :itemlist
+            [:ITEMLIST, line]
+          end
+        end
+      else
+        line = @line.content.strip
+        if line.empty?
+          @no += 1
+          next_token
+        else
+          puts "b: ITEMLISTCONTINUE: [#{line.empty?}] --" if @view_token_type
+          @no += 1
+          @current_type = :itemlist
+          [:ITEMLISTCONTINUE, line]
+        end
+      end
+    when :numlist
+      @line.content =~ /^(\s*)(\(\d+\))(\s+)(.*)/
+      if $4.nil?
+        @line.content =~ /^(\s*)(\d\.)(\s+)(.*)/
+      end
+      line = $4
+      line ||= @line.content.strip
+      if line.empty?
+        @no += 1
+        next_token
+      else
+        if_current_indent_equal(@line.indent) do
+          puts "b: NUMLIST: [#{line}]" if @view_token_type
+          @current_type = :numlist
+          [:NUMLIST, line]
+        end
+      end
+    else
+      @no += 1
+      if @current_type == :descline
+        @current_type = :descline
+        puts "b: DESCLINE: #{@line.content}" if @view_token_type
+        [:DESCLINE, $1 + "\n"]
+      else
+        @current_type = :quote
+        puts "b: QUOTE: #{$1}" if @view_token_type
+        [:QUOTE, @line.content.sub("  ","")]
+      end
+    end
+  when /^(\:)(.*)/ # type = desclist
+   if_current_indent_equal(@line.indent) do
+      @current_type = :descline
+      puts "b: DESCLINE_TILTE: #{$2.strip}" if @view_token_type
+      [:DESCLINE_TITLE, $2.strip]
+    end
+  when /^(\s*)(\*)(\s+)(.*)/ # type = itemlist
+    if_current_indent_equal(@line.indent) do
+        puts "b: ITEMLIST: #{@line.content}" if @view_token_type
+        @current_type = :itemlist
+        [:ITEMLIST, $4]
+    end
+  when /^(\s*)(\(\d+\))(\s+)(.*)/
+    if_current_indent_equal(@line.indent) do
+        puts "b: NUMLIST: #{@line.content}" if @view_token_type
+        @current_type = :numlist
+        [:NUMLIST, $4]
+    end
+  when  /^(\s*)(\d+\.)(\s+)(.*)/ # type = numlist
+    if_current_indent_equal(@line.indent) do
+        puts "b: NUMLIST: #{@line.content}" if @view_token_type
+        @current_type = :numlist
+        [:NUMLIST, $4]
+    end
+  when /^\|.*/ # type = table
+    @no += 1
+    @current_type = :table
+    lines = @line.content.chomp.split("|")
+    lines.shift
+    [:TABLELINE, lines]
+  when /(.*)/    # type == plain
+    @current_type = :plain
+    if_current_indent_equal(@line.indent) do
+      puts "b: PLAIN: #{@line.content}" if @view_token_type
+      [:PLAIN, @line.content]
+    end
+  else
+    puts "raise : #{@line}"
+  end
+end
+
+def if_current_indent_equal(ident)
+  indent_space = 2
+  puts "current: #{@current_indent}, line: #{@line.indent}, stack #{@indent_stack.size}:" if @view_token_type
+  indent_sabun = @current_indent - @line.indent
+  if indent_sabun >= -1 and indent_sabun <= 1
+    @no += 1
+    yield
+  elsif @current_indent < @line.indent
+    ((@line.indent - @current_indent) / indent_space).times do
+      @indent_stack.push("")
+    end
+    @current_indent = @line.indent
+    puts "b: INDENT" if @view_token_type
+    [:INDENT, :INDENT]
+  else
+    @indent_stack.pop
+    @current_indent = @line.indent if @line.indent == @indent_stack.size * indent_space
+    puts "b: DEDENT" if @view_token_type
+    [:DEDENT, :DEDENT]
+  end
+end
+
+---- header
+require "parserutility"
+require "rafinlineparser.tab"
+require "rafelement"
+
+module Raf
+
+---- footer
+  if __FILE__ == $0
+    raf = BlockParser.new
+    src = $stdin.readlines
+    nodes = raf.parse(src)
+    puts "----- index -----"
+    raf.index.each do |key,val|
+      puts key
+      val.each do |v| p v end
+    end
+    puts "----- info -----"
+    p raf.info
+    puts "----- output -----"
+    nodes.each do |n|
+      puts n.apply
+    end
+  end
+end # end of module Raf

@@ -1,0 +1,670 @@
+state 7 contains 2 shift/reduce conflicts
+state 8 contains 2 shift/reduce conflicts
+state 15 contains 1 shift/reduce conflicts
+state 17 contains 1 shift/reduce conflicts
+state 18 contains 1 shift/reduce conflicts
+state 21 contains 1 shift/reduce conflicts
+state 27 contains 1 shift/reduce conflicts
+state 30 contains 1 shift/reduce conflicts
+
+
+-------- Grammar --------
+
+rule 1 document: blocks
+rule 2 blocks: block
+rule 3 blocks: blocks block
+rule 4 block: header
+rule 5 block: paragraph
+rule 6 block: quote_block
+rule 7 block: itemlist_blocks
+rule 8 block: numlist_blocks
+rule 9 block: desc_block
+rule 10 block: table_block
+rule 11 block: headline
+rule 12 block: WHITELINE
+rule 13 header: HEADER
+rule 14 headline: HEADLINE
+rule 15 paragraph: plain_texts
+rule 16 plain_texts: PLAIN
+rule 17 plain_texts: plain_texts PLAIN
+rule 18 desc_block: DESCLINE_TITLE desclines
+rule 19 desclines: DESCLINE
+rule 20 desclines: desclines DESCLINE
+rule 21 desclines: 
+rule 22 quote_block: quotes
+rule 23 quotes: QUOTE
+rule 24 quotes: quotes QUOTE
+rule 25 itemlist_blocks: itemlist_block
+rule 26 itemlist_blocks: itemlist_blocks itemlist_block
+rule 27 itemlist_block: itemlists
+rule 28 itemlist_block: itemlist_indent_blocks
+rule 29 itemlist_indent_blocks: INDENT itemlist_blocks DEDENT
+rule 30 itemlists: itemlistitems
+rule 31 itemlists: itemlists itemlistitems
+rule 32 itemlistitems: ITEMLIST
+rule 33 itemlistitems: ITEMLIST itemlist_continues
+rule 34 itemlist_continues: ITEMLISTCONTINUE
+rule 35 itemlist_continues: itemlist_continues ITEMLISTCONTINUE
+rule 36 numlist_blocks: numlist_block
+rule 37 numlist_blocks: numlist_blocks numlist_block
+rule 38 numlist_block: numlists
+rule 39 numlist_block: numlist_indent_blocks
+rule 40 numlist_indent_blocks: INDENT numlist_blocks DEDENT
+rule 41 numlists: NUMLIST
+rule 42 numlists: numlists NUMLIST
+rule 43 table_block: tablelines
+rule 44 tablelines: TABLELINE
+rule 45 tablelines: tablelines TABLELINE
+
+------- Symbols -------
+
+**Nonterminals, with rules where they appear
+
+  $start (18)
+    on right: 
+    on left : 
+  document (19)
+    on right: 
+    on left : 1
+  blocks (20)
+    on right: 1 3
+    on left : 2 3
+  block (21)
+    on right: 2 3
+    on left : 4 5 6 7 8 9 10 11 12
+  header (22)
+    on right: 4
+    on left : 13
+  paragraph (23)
+    on right: 5
+    on left : 15
+  quote_block (24)
+    on right: 6
+    on left : 22
+  itemlist_blocks (25)
+    on right: 7 26 29
+    on left : 25 26
+  numlist_blocks (26)
+    on right: 8 37 40
+    on left : 36 37
+  desc_block (27)
+    on right: 9
+    on left : 18
+  table_block (28)
+    on right: 10
+    on left : 43
+  headline (29)
+    on right: 11
+    on left : 14
+  plain_texts (30)
+    on right: 15 17
+    on left : 16 17
+  desclines (31)
+    on right: 18 20
+    on left : 19 20 21
+  quotes (32)
+    on right: 22 24
+    on left : 23 24
+  itemlist_block (33)
+    on right: 25 26
+    on left : 27 28
+  itemlists (34)
+    on right: 27 31
+    on left : 30 31
+  itemlist_indent_blocks (35)
+    on right: 28
+    on left : 29
+  itemlistitems (36)
+    on right: 30 31
+    on left : 32 33
+  itemlist_continues (37)
+    on right: 33 35
+    on left : 34 35
+  numlist_block (38)
+    on right: 36 37
+    on left : 38 39
+  numlists (39)
+    on right: 38 42
+    on left : 41 42
+  numlist_indent_blocks (40)
+    on right: 39
+    on left : 40
+  tablelines (41)
+    on right: 43 45
+    on left : 44 45
+
+**Terminals, with rules where they appear
+
+  $end (0) 
+  error (1) 
+  DUMMY (2) 
+  LIST (3) 
+  PLAIN_OPEN (4) 
+  PLAIN (5) 16 17
+  INDENT (6) 29 40
+  DEDENT (7) 29 40
+  DESCLINE (8) 19 20
+  WHITELINE (9) 12
+  HEADER (10) 13
+  HEADLINE (11) 14
+  DESCLINE_TITLE (12) 18
+  QUOTE (13) 23 24
+  ITEMLIST (14) 32 33
+  ITEMLISTCONTINUE (15) 34 35
+  NUMLIST (16) 41 42
+  TABLELINE (17) 44 45
+
+--------- State ---------
+
+state 0
+
+
+  PLAIN         shift, and go to state 16
+  INDENT        shift, and go to state 23
+  WHITELINE     shift, and go to state 12
+  HEADER        shift, and go to state 13
+  HEADLINE      shift, and go to state 14
+  DESCLINE_TITLE  shift, and go to state 17
+  QUOTE         shift, and go to state 19
+  ITEMLIST      shift, and go to state 25
+  NUMLIST       shift, and go to state 29
+  TABLELINE     shift, and go to state 31
+
+  document      go to state 1
+  blocks        go to state 2
+  block         go to state 3
+  header        go to state 4
+  paragraph     go to state 5
+  quote_block   go to state 6
+  itemlist_blocks  go to state 7
+  numlist_blocks  go to state 8
+  desc_block    go to state 9
+  table_block   go to state 10
+  headline      go to state 11
+  plain_texts   go to state 15
+  quotes        go to state 18
+  itemlist_block  go to state 20
+  itemlists     go to state 21
+  itemlist_indent_blocks  go to state 22
+  itemlistitems  go to state 24
+  numlist_block  go to state 26
+  numlists      go to state 27
+  numlist_indent_blocks  go to state 28
+  tablelines    go to state 30
+
+state 1
+
+
+  $end          shift, and go to state 32
+
+
+state 2
+
+   1) document : blocks _
+   3) blocks : blocks _ block
+
+  PLAIN         shift, and go to state 16
+  INDENT        shift, and go to state 23
+  WHITELINE     shift, and go to state 12
+  HEADER        shift, and go to state 13
+  HEADLINE      shift, and go to state 14
+  DESCLINE_TITLE  shift, and go to state 17
+  QUOTE         shift, and go to state 19
+  ITEMLIST      shift, and go to state 25
+  NUMLIST       shift, and go to state 29
+  TABLELINE     shift, and go to state 31
+  $default      reduce using rule 1 (document)
+
+  block         go to state 33
+  header        go to state 4
+  paragraph     go to state 5
+  quote_block   go to state 6
+  itemlist_blocks  go to state 7
+  numlist_blocks  go to state 8
+  desc_block    go to state 9
+  table_block   go to state 10
+  headline      go to state 11
+  plain_texts   go to state 15
+  quotes        go to state 18
+  itemlist_block  go to state 20
+  itemlists     go to state 21
+  itemlist_indent_blocks  go to state 22
+  itemlistitems  go to state 24
+  numlist_block  go to state 26
+  numlists      go to state 27
+  numlist_indent_blocks  go to state 28
+  tablelines    go to state 30
+
+state 3
+
+   2) blocks : block _
+
+  $default      reduce using rule 2 (blocks)
+
+
+state 4
+
+   4) block : header _
+
+  $default      reduce using rule 4 (block)
+
+
+state 5
+
+   5) block : paragraph _
+
+  $default      reduce using rule 5 (block)
+
+
+state 6
+
+   6) block : quote_block _
+
+  $default      reduce using rule 6 (block)
+
+
+state 7
+
+   7) block : itemlist_blocks _
+  26) itemlist_blocks : itemlist_blocks _ itemlist_block
+
+  INDENT        shift, and go to state 35
+  INDENT        [reduce using rule 7 (block)]
+  ITEMLIST      shift, and go to state 25
+  ITEMLIST      [reduce using rule 7 (block)]
+  $default      reduce using rule 7 (block)
+
+  itemlist_block  go to state 34
+  itemlists     go to state 21
+  itemlist_indent_blocks  go to state 22
+  itemlistitems  go to state 24
+
+state 8
+
+   8) block : numlist_blocks _
+  37) numlist_blocks : numlist_blocks _ numlist_block
+
+  INDENT        shift, and go to state 37
+  INDENT        [reduce using rule 8 (block)]
+  NUMLIST       shift, and go to state 29
+  NUMLIST       [reduce using rule 8 (block)]
+  $default      reduce using rule 8 (block)
+
+  numlist_block  go to state 36
+  numlists      go to state 27
+  numlist_indent_blocks  go to state 28
+
+state 9
+
+   9) block : desc_block _
+
+  $default      reduce using rule 9 (block)
+
+
+state 10
+
+  10) block : table_block _
+
+  $default      reduce using rule 10 (block)
+
+
+state 11
+
+  11) block : headline _
+
+  $default      reduce using rule 11 (block)
+
+
+state 12
+
+  12) block : WHITELINE _
+
+  $default      reduce using rule 12 (block)
+
+
+state 13
+
+  13) header : HEADER _
+
+  $default      reduce using rule 13 (header)
+
+
+state 14
+
+  14) headline : HEADLINE _
+
+  $default      reduce using rule 14 (headline)
+
+
+state 15
+
+  15) paragraph : plain_texts _
+  17) plain_texts : plain_texts _ PLAIN
+
+  PLAIN         shift, and go to state 38
+  PLAIN         [reduce using rule 15 (paragraph)]
+  $default      reduce using rule 15 (paragraph)
+
+
+state 16
+
+  16) plain_texts : PLAIN _
+
+  $default      reduce using rule 16 (plain_texts)
+
+
+state 17
+
+  18) desc_block : DESCLINE_TITLE _ desclines
+
+  DESCLINE      shift, and go to state 40
+  DESCLINE      [reduce using rule 21 (desclines)]
+  $default      reduce using rule 21 (desclines)
+
+  desclines     go to state 39
+
+state 18
+
+  22) quote_block : quotes _
+  24) quotes : quotes _ QUOTE
+
+  QUOTE         shift, and go to state 41
+  QUOTE         [reduce using rule 22 (quote_block)]
+  $default      reduce using rule 22 (quote_block)
+
+
+state 19
+
+  23) quotes : QUOTE _
+
+  $default      reduce using rule 23 (quotes)
+
+
+state 20
+
+  25) itemlist_blocks : itemlist_block _
+
+  $default      reduce using rule 25 (itemlist_blocks)
+
+
+state 21
+
+  27) itemlist_block : itemlists _
+  31) itemlists : itemlists _ itemlistitems
+
+  ITEMLIST      shift, and go to state 25
+  ITEMLIST      [reduce using rule 27 (itemlist_block)]
+  $default      reduce using rule 27 (itemlist_block)
+
+  itemlistitems  go to state 42
+
+state 22
+
+  28) itemlist_block : itemlist_indent_blocks _
+
+  $default      reduce using rule 28 (itemlist_block)
+
+
+state 23
+
+  29) itemlist_indent_blocks : INDENT _ itemlist_blocks DEDENT
+  40) numlist_indent_blocks : INDENT _ numlist_blocks DEDENT
+
+  INDENT        shift, and go to state 23
+  ITEMLIST      shift, and go to state 25
+  NUMLIST       shift, and go to state 29
+
+  itemlist_block  go to state 20
+  itemlist_blocks  go to state 43
+  itemlists     go to state 21
+  itemlist_indent_blocks  go to state 22
+  itemlistitems  go to state 24
+  numlist_block  go to state 26
+  numlist_blocks  go to state 44
+  numlists      go to state 27
+  numlist_indent_blocks  go to state 28
+
+state 24
+
+  30) itemlists : itemlistitems _
+
+  $default      reduce using rule 30 (itemlists)
+
+
+state 25
+
+  32) itemlistitems : ITEMLIST _
+  33) itemlistitems : ITEMLIST _ itemlist_continues
+
+  ITEMLISTCONTINUE  shift, and go to state 46
+  $default      reduce using rule 32 (itemlistitems)
+
+  itemlist_continues  go to state 45
+
+state 26
+
+  36) numlist_blocks : numlist_block _
+
+  $default      reduce using rule 36 (numlist_blocks)
+
+
+state 27
+
+  38) numlist_block : numlists _
+  42) numlists : numlists _ NUMLIST
+
+  NUMLIST       shift, and go to state 47
+  NUMLIST       [reduce using rule 38 (numlist_block)]
+  $default      reduce using rule 38 (numlist_block)
+
+
+state 28
+
+  39) numlist_block : numlist_indent_blocks _
+
+  $default      reduce using rule 39 (numlist_block)
+
+
+state 29
+
+  41) numlists : NUMLIST _
+
+  $default      reduce using rule 41 (numlists)
+
+
+state 30
+
+  43) table_block : tablelines _
+  45) tablelines : tablelines _ TABLELINE
+
+  TABLELINE     shift, and go to state 48
+  TABLELINE     [reduce using rule 43 (table_block)]
+  $default      reduce using rule 43 (table_block)
+
+
+state 31
+
+  44) tablelines : TABLELINE _
+
+  $default      reduce using rule 44 (tablelines)
+
+
+state 32
+
+
+  $end          shift, and go to state 49
+
+
+state 33
+
+   3) blocks : blocks block _
+
+  $default      reduce using rule 3 (blocks)
+
+
+state 34
+
+  26) itemlist_blocks : itemlist_blocks itemlist_block _
+
+  $default      reduce using rule 26 (itemlist_blocks)
+
+
+state 35
+
+  29) itemlist_indent_blocks : INDENT _ itemlist_blocks DEDENT
+
+  INDENT        shift, and go to state 35
+  ITEMLIST      shift, and go to state 25
+
+  itemlist_block  go to state 20
+  itemlist_blocks  go to state 43
+  itemlists     go to state 21
+  itemlist_indent_blocks  go to state 22
+  itemlistitems  go to state 24
+
+state 36
+
+  37) numlist_blocks : numlist_blocks numlist_block _
+
+  $default      reduce using rule 37 (numlist_blocks)
+
+
+state 37
+
+  40) numlist_indent_blocks : INDENT _ numlist_blocks DEDENT
+
+  INDENT        shift, and go to state 37
+  NUMLIST       shift, and go to state 29
+
+  numlist_block  go to state 26
+  numlist_blocks  go to state 44
+  numlists      go to state 27
+  numlist_indent_blocks  go to state 28
+
+state 38
+
+  17) plain_texts : plain_texts PLAIN _
+
+  $default      reduce using rule 17 (plain_texts)
+
+
+state 39
+
+  18) desc_block : DESCLINE_TITLE desclines _
+  20) desclines : desclines _ DESCLINE
+
+  DESCLINE      shift, and go to state 50
+  $default      reduce using rule 18 (desc_block)
+
+
+state 40
+
+  19) desclines : DESCLINE _
+
+  $default      reduce using rule 19 (desclines)
+
+
+state 41
+
+  24) quotes : quotes QUOTE _
+
+  $default      reduce using rule 24 (quotes)
+
+
+state 42
+
+  31) itemlists : itemlists itemlistitems _
+
+  $default      reduce using rule 31 (itemlists)
+
+
+state 43
+
+  26) itemlist_blocks : itemlist_blocks _ itemlist_block
+  29) itemlist_indent_blocks : INDENT itemlist_blocks _ DEDENT
+
+  INDENT        shift, and go to state 35
+  DEDENT        shift, and go to state 51
+  ITEMLIST      shift, and go to state 25
+
+  itemlist_block  go to state 34
+  itemlists     go to state 21
+  itemlist_indent_blocks  go to state 22
+  itemlistitems  go to state 24
+
+state 44
+
+  37) numlist_blocks : numlist_blocks _ numlist_block
+  40) numlist_indent_blocks : INDENT numlist_blocks _ DEDENT
+
+  INDENT        shift, and go to state 37
+  DEDENT        shift, and go to state 52
+  NUMLIST       shift, and go to state 29
+
+  numlist_block  go to state 36
+  numlists      go to state 27
+  numlist_indent_blocks  go to state 28
+
+state 45
+
+  33) itemlistitems : ITEMLIST itemlist_continues _
+  35) itemlist_continues : itemlist_continues _ ITEMLISTCONTINUE
+
+  ITEMLISTCONTINUE  shift, and go to state 53
+  $default      reduce using rule 33 (itemlistitems)
+
+
+state 46
+
+  34) itemlist_continues : ITEMLISTCONTINUE _
+
+  $default      reduce using rule 34 (itemlist_continues)
+
+
+state 47
+
+  42) numlists : numlists NUMLIST _
+
+  $default      reduce using rule 42 (numlists)
+
+
+state 48
+
+  45) tablelines : tablelines TABLELINE _
+
+  $default      reduce using rule 45 (tablelines)
+
+
+state 49
+
+
+  $default      accept
+
+
+state 50
+
+  20) desclines : desclines DESCLINE _
+
+  $default      reduce using rule 20 (desclines)
+
+
+state 51
+
+  29) itemlist_indent_blocks : INDENT itemlist_blocks DEDENT _
+
+  $default      reduce using rule 29 (itemlist_indent_blocks)
+
+
+state 52
+
+  40) numlist_indent_blocks : INDENT numlist_blocks DEDENT _
+
+  $default      reduce using rule 40 (numlist_indent_blocks)
+
+
+state 53
+
+  35) itemlist_continues : itemlist_continues ITEMLISTCONTINUE _
+
+  $default      reduce using rule 35 (itemlist_continues)
+
