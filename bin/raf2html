@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-$:.unshift "/home/yoshino/src/raf/lib"
 $:.unshift File.join(File.dirname(__FILE__), "../lib")
 require "optparse"
 require "rafblockparser.tab"
@@ -7,9 +6,12 @@ require "raf2html"
 
 options = {:css => nil, :language => 'ja', :index => true, :quiet => false}
 opt = OptionParser.new do |opt|
+  opt.release = "2011-04-07"
+  opt.version = "0.0.2"
   opt.on("--css file", "スタイルシートのファイルを指定") {|f| options[:css] = f}
   opt.on("-L", "--language LANG", "言語(デフォルトは #{options[:language]} 。ドキュメント側で指定されていればそちらを優先)"){|l| options[:language] = l}
   opt.on("--[no-]index", "目次を生成する(デフォルトは生成する)"){|v| options[:index] = v }
+  opt.on("--[no-]metadata", "メタ情報を出力しない(デフォルトは出力する)"){|v| options[:metadata] = v }
   opt.on("-q","--quiet", "本文だけを出力する(ヘッダやフッタは出力しない)"){ options[:quiet] = true }
 end
 opt.parse!(ARGV)

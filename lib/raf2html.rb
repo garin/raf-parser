@@ -10,6 +10,7 @@ module Raf
       @css = File.open(options[:css]).readlines.to_s unless options[:css].nil?
       @language = options[:language]
       @index = options[:index]
+      @metadata = options[:metadata]
       @quiet = options[:quiet]
 
       @raf = BlockParser.new
@@ -27,7 +28,7 @@ module Raf
       html = ""
       html += header unless @quiet
       html += header_title
-      html += metadata
+      html += metadata if @metadata
       html += index if @index
       html += body
       html += footnote
