@@ -1,3 +1,5 @@
+# Copyright (C) garin <garin54@gmail.com> 2011
+# See the included file COPYING for details.
 module ParserUtility
   def add_children_to_element(obj, *val)
     obj.add = *val

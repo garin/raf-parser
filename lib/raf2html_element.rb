@@ -1,3 +1,6 @@
+# Copyright (C) garin <garin54@gmail.com> 2011
+# See the included file COPYING for details.
+
 module Raf
  
   class Element
@@ -35,7 +38,7 @@ module Raf
       str = ""
       str += "<h#{@contents[0]} id='raf-head#{@contents[0]}-#{@contents[2]}'>"
       str += "<a id='#{@contents[1].to_code}'></a>"
-      str += "#{@contents[3]}" unless @contents[0] == 1 or @contents[0] == 5 or @contents[0] == 6
+      str += " #{@contents[3]}" unless @contents[0] == 1 or @contents[0] == 5 or @contents[0] == 6
       str += "#{@contents[1]}</h#{@contents[0]}>\n"
       str
     end

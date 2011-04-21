@@ -1,3 +1,5 @@
+# Copyright (C) garin <garin54@gmail.com> 2011
+# See the included file COPYING for details.
 require "raf2html_element"
 require "cgi"
 

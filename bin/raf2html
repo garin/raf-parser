@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# Copyright (C) garin <garin54@gmail.com> 2011
+# See the included file COPYING for details.
 $:.unshift File.join(File.dirname(__FILE__), "../lib")
 require "optparse"
 require "rafblockparser.tab"
