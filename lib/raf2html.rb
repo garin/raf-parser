@@ -16,14 +16,14 @@ module Raf
       @quiet = options[:quiet]
 
       @raf = BlockParser.new
-      @info = setup_info
+      @metadata = setup_metadata
       @nodes = @raf.parse src.map {|s| CGI.escapeHTML(s) }
     end
 
-    def setup_info
-      info = @raf.info
-      info[:language] = @language if info[:language].nil?
-      info
+    def setup_metadata
+      metadata = @raf.metadata
+      metadata[:language] = @language if metadata[:language].nil?
+      metadata
     end
 
     def to_html
@@ -85,30 +85,30 @@ module Raf
       str = "<div id='raf-metadata'>"
       str += "<table id='raf-metadata-table'>"
       str_pre = ""
-      str_pre += "<tr><th>著者</th><td colspan='3'>#{@info[:creator]}</td></tr>" unless @info[:creator].nil?
+      str_pre += "<tr><th>著者</th><td colspan='3'>#{@metadata[:creator]}</td></tr>" unless @metadata[:creator].nil?
 
-      unless @info[:date].nil? or @info[:update].nil?
+      unless @metadata[:date].nil? or @metadata[:update].nil?
         str_pre += "<tr>"
-        str_pre += "<th>作成日</th><td>#{@info[:date]}</td>"  unless @info[:date].nil?
-        str_pre += "<th>更新日</th><td>#{@info[:update]}</td>" unless @info[:update].nil?
+        str_pre += "<th>作成日</th><td>#{@metadata[:date]}</td>"  unless @metadata[:date].nil?
+        str_pre += "<th>更新日</th><td>#{@metadata[:update]}</td>" unless @metadata[:update].nil?
         str_pre += "</tr>"
       end
 
-      unless @info[:publisher].nil? or @info[:version].nil?
+      unless @metadata[:publisher].nil? or @metadata[:version].nil?
         str_pre += "<tr>"
-        str_pre += "<th>発行</th><td>#{@info[:publisher]}</td>" unless @info[:publisher].nil?
-        str_pre += "<th>バージョン</th><td>#{@info[:version]}</td>" unless @info[:version].nil?
+        str_pre += "<th>発行</th><td>#{@metadata[:publisher]}</td>" unless @metadata[:publisher].nil?
+        str_pre += "<th>バージョン</th><td>#{@metadata[:version]}</td>" unless @metadata[:version].nil?
         str_pre += "</tr>"
       end
 
-      unless @info[:contributor].nil? or @info[:revison].nil?
+      unless @metadata[:contributor].nil? or @metadata[:revison].nil?
         str_pre += "<tr>"
-        str_pre += "<th>寄稿者</th>#{@info[:contributor]}</td>" unless @info[:contributor].nil?
-        str_pre += "<th>リビジョン</th><td>#{@info[:revison]}</td>" unless @info[:revison].nil?
+        str_pre += "<th>寄稿者</th>#{@metadata[:contributor]}</td>" unless @metadata[:contributor].nil?
+        str_pre += "<th>リビジョン</th><td>#{@metadata[:revison]}</td>" unless @metadata[:revison].nil?
         str_pre += "</tr>"
       end
 
-      str_pre += "<tr><th>概要</th><td colspan='4'>#{@info[:description]}</td></tr>" unless @info[:description].nil?
+      str_pre += "<tr><th>概要</th><td colspan='4'>#{@metadata[:description]}</td></tr>" unless @metadata[:description].nil?
 
       if str_pre.empty?
         str_pre
@@ -133,20 +133,20 @@ module Raf
       str = <<EOL
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="#{@info[:language]}">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="#{@metadata[:language]}">
   <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 EOL
       str += css
       str += <<EOL
-  <title>#{@info[:subject]}</title>
+  <title>#{@metadata[:subject]}</title>
   </head>
 <body>
 EOL
     end
 
     def header_title
-      "<h1>#{@info[:subject]}</h1>\n"
+      "<h1>#{@metadata[:subject]}</h1>\n"
     end
 
     def css
@@ -161,7 +161,7 @@ EOL
 
     def footer
       str = "\n"
-      str += "<div id='rights'>#{@info[:rights]}</div>\n" unless @info[:rights].nil?
+      str += "<div id='rights'>#{@metadata[:rights]}</div>\n" unless @metadata[:rights].nil?
       str += "</body>\n</html>"
       str
     end

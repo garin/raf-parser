@@ -28,7 +28,7 @@ class BlockParser
              name, val = val[0].split(":",2)
              if name.nil? or val.nil?
              else
-               @info.update({name.strip.to_sym => val.strip })
+               @metadata.update({name.strip.to_sym => val.strip })
              end
              nil }
 
@@ -37,7 +37,7 @@ class BlockParser
                         title = val[0][1]
                         level = val[0][0]
                         if level == 1
-                          @info[:subject] ||= title
+                          @metadata[:subject] ||= title
                         else
                           @head_index.update(level)
                         end
@@ -140,7 +140,7 @@ end
 
 def initialize
   @inline_parser = InlineParser.new
-  @info = {}
+  @metadata = {}
   @inline_index = @inline_parser.index
   @index = {}
   @head_index = HeadIndex.new
