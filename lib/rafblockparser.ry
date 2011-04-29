@@ -145,7 +145,7 @@ def initialize
   @index = {}
   @head_index = HeadIndex.new
 end
-attr_reader :info, :inline_index, :index
+attr_reader :metadata, :inline_index, :index
 
 def parse(src)
   @no = 0
