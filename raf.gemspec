@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{raf}
-  s.version = "0.0.1"
+  s.version = "0.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["garin"]
-  s.date = %q{2011-04-07}
+  s.date = %q{2011-04-11}
   s.default_executable = %q{raf2html}
   s.description = %q{raf is simple document format}
   s.email = %q{garin54@gmail.com}
@@ -47,7 +47,6 @@ Gem::Specification.new do |s|
     "test/test_erb.rb",
     "test/test_footnote.rb",
     "test/test_headline.rb",
-    "test/test_headline_and_itemlist.rb",
     "test/test_helper.rb",
     "test/test_image.rb",
     "test/test_italic.rb",
@@ -76,7 +75,6 @@ Gem::Specification.new do |s|
     "test/test_erb.rb",
     "test/test_footnote.rb",
     "test/test_headline.rb",
-    "test/test_headline_and_itemlist.rb",
     "test/test_helper.rb",
     "test/test_image.rb",
     "test/test_italic.rb",

@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
+# -*- encoding: utf-8 -*-
 # Copyright (C) garin <garin54@gmail.com> 2011
 # See the included file COPYING for details.
 $:.unshift File.join(File.dirname(__FILE__), "../lib")
 require "optparse"
-require "rafblockparser.tab"
 require "raf2html"
 
 options = {:css => nil, :language => 'ja', :index => true, :quiet => false}

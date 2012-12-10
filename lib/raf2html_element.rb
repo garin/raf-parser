@@ -1,8 +1,9 @@
+# -*- encoding: utf-8 -*-
 # Copyright (C) garin <garin54@gmail.com> 2011
 # See the included file COPYING for details.
-
+require "rafblockparser.tab"
 module Raf
- 
+
   class Element
     def newline_to_br(str)
       str.gsub("\n", "<br />\n")
@@ -17,20 +18,20 @@ module Raf
       str
     end
   end
-  
+
   # ----- Blocks
   class WhiteLine < Element
     def apply
       "\n"
     end
   end
-  
+
   class PlainTextBlock < Element
     def apply
       @contents.map {|c| c.apply }
     end
   end
-  
+
   class HeadLine < Element
     # @contents = [level, title, id, index]
     def apply
@@ -43,7 +44,7 @@ module Raf
       str
     end
   end
-  
+
   class Paragraph  < Element
     def apply
       "<p>#{@contents.map{|c| c.apply}}</p>\n"
@@ -54,7 +55,7 @@ module Raf
     def apply
       "<pre>#{@contents}</pre>\n"
     end
-  end  
+  end
 
   class ItemList < Element
     def apply
@@ -65,14 +66,14 @@ module Raf
         type_pre = type
         case item
         when :INDENT
-          type = :indent          
+          type = :indent
           str += "\n<ul>\n"
         when :DEDENT
-          type = :dedent          
-          str += "</li>\n" if type_pre == :item          
+          type = :dedent
+          str += "</li>\n" if type_pre == :item
           str += "</ul>\n</li>\n"
         else
-          type = :item          
+          type = :item
           str += "</li>\n" if type_pre == :item
           str += "<li>#{item.apply}"
         end
@@ -96,7 +97,7 @@ module Raf
         end
       end
       str += "</ol>\n"
-      str 
+      str
     end
   end
 
@@ -119,7 +120,7 @@ module Raf
           if item =~ /^\s*\*/
             str += "<th>#{item.sub(/^\s*\*/, "").sub(/\*\s*$/,"")}</th>"
           else
-            str += "<td>#{item}</td>"  
+            str += "<td>#{item}</td>"
           end
         end
         str += "\n</tr>"
@@ -129,15 +130,15 @@ module Raf
     end
   end
   # --- Blocks end
-  
-  # --- Inlines 
+
+  # --- Inlines
   class Label < Element
     # @contents = [label, title]
     def apply
       "<a href='##{@contents[0]}' id='#{@contents[0]}'>#{@contents[1]}</a>"
     end
   end
-  
+
   class Reference < Element
     def apply
       "<a href='#{@contents[1]}' title='#{@contents[1]}'>#{@contents[0]}</a>"
@@ -150,7 +151,7 @@ module Raf
       "#{newline_to_br(@contents.join(""))}"
     end
   end
-  
+
   class Emphasis       < Element
     def apply
       "<em>#{@contents.map{|c| c.apply}}</em>"
@@ -183,16 +184,16 @@ module Raf
       "<ruby><rb>#{@contents[0]}</rb><rp>(</rp><rt>#{@contents[1]}</rt><rp>)</rp></ruby>"
     end
   end
-  
+
   class Footnote       < Element
     def apply
-      "<a href='#raf-footnote-#{@contents[1]}' name='raf-footnote-#{@contents[1]}-reverse' title='#{@contents[0].map {|c| c.apply}}'><sup><small>*#{@contents[1]}</small></sup></a>"
+      "<a href='#raf-footnote-#{@contents[1]}' name='raf-footnote-#{@contents[1]}-reverse' title='#{@contents[0].map {|c| c.apply}}' class='footnote-reverse'><sup><small>*#{@contents[1]}</small></sup></a>"
     end
-  end  
+  end
 
   class Image       < Element
     def apply
       "<img src='#{@contents}' />"
     end
-  end  
+  end
 end

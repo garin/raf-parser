@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 # Copyright (C) garin <garin54@gmail.com> 2011
 # See the included file COPYING for details.
 require "raf2html_element"
@@ -51,8 +52,7 @@ module Raf
         next if h[:level] == 1 or h[:level] == 6
 
         if h[:level] == 5
-          str += '<br />'
-          str += "<a href='#raf-head#{h[:level]}-#{i+1}' style='padding-left: 1em'>#{h[:title]}</a>\n"
+          str += "<div class=><a href='#raf-head#{h[:level]}-#{i+1}'>#{h[:title]}</a></div>\n"
         else
           str += index_terminate(h[:level], level_pre)
           str += "<li><a href='#raf-head#{h[:level]}-#{i+1}'>#{h[:index]} #{h[:title]}</a>\n"
@@ -86,28 +86,13 @@ module Raf
       str += "<table id='raf-metadata-table'>"
       str_pre = ""
       str_pre += "<tr><th>著者</th><td colspan='3'>#{@metadata[:creator]}</td></tr>" unless @metadata[:creator].nil?
-
-      unless @metadata[:date].nil? or @metadata[:update].nil?
-        str_pre += "<tr>"
-        str_pre += "<th>作成日</th><td>#{@metadata[:date]}</td>"  unless @metadata[:date].nil?
-        str_pre += "<th>更新日</th><td>#{@metadata[:update]}</td>" unless @metadata[:update].nil?
-        str_pre += "</tr>"
-      end
-
-      unless @metadata[:publisher].nil? or @metadata[:version].nil?
-        str_pre += "<tr>"
-        str_pre += "<th>発行</th><td>#{@metadata[:publisher]}</td>" unless @metadata[:publisher].nil?
-        str_pre += "<th>バージョン</th><td>#{@metadata[:version]}</td>" unless @metadata[:version].nil?
-        str_pre += "</tr>"
-      end
-
-      unless @metadata[:contributor].nil? or @metadata[:revison].nil?
-        str_pre += "<tr>"
-        str_pre += "<th>寄稿者</th>#{@metadata[:contributor]}</td>" unless @metadata[:contributor].nil?
-        str_pre += "<th>リビジョン</th><td>#{@metadata[:revison]}</td>" unless @metadata[:revison].nil?
-        str_pre += "</tr>"
-      end
-
+      str_pre += "<tr><th>作成日</th><td>#{@metadata[:date]}</td></tr>"  unless @metadata[:date].nil?
+      str_pre += "<tr><th>更新日</th><td>#{@metadata[:update]}</td></tr>" unless @metadata[:update].nil?
+      str_pre += "<tr><th>タグ</th><td>#{@metadata[:tag]}</td></tr>" unless @metadata[:tag].nil?
+      str_pre += "<tr><th>発行</th><td>#{@metadata[:publisher]}</td></tr>" unless @metadata[:publisher].nil?
+      str_pre += "<tr><th>バージョン</th><td>#{@metadata[:version]}</td></tr>" unless @metadata[:version].nil?
+      str_pre += "<tr><th>寄稿者</th>#{@metadata[:contributor]}</tr></td>" unless @metadata[:contributor].nil?
+      str_pre += "<tr.<th>リビジョン</th><td>#{@metadata[:revison]}</tr></td>" unless @metadata[:revison].nil?
       str_pre += "<tr><th>概要</th><td colspan='4'>#{@metadata[:description]}</td></tr>" unless @metadata[:description].nil?
 
       if str_pre.empty?
@@ -121,8 +106,8 @@ module Raf
       return "" if @raf.inline_index[:footnote].nil?
       str = "<div id='raf-footnote'>"
       @raf.inline_index[:footnote].each_with_index do |f,i|
-        str += "<a id='raf-footnote-#{i+1}' />"
-        str += "<a href='#raf-footnote-#{i+1}-reverse'>*#{i+1}</a>"
+        str += "<a id='raf-footnote-#{i+1}' class='footnote' />"
+        str += "<a href='#raf-footnote-#{i+1}-reverse' class='footnote-reverse'>*#{i+1}</a>"
         str += " #{f[:content].map{|c| c.apply}}<br />"
       end
       str += "</div>"
