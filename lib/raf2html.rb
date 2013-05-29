@@ -86,7 +86,7 @@ module Raf
       str += "<table id='raf-metadata-table'>"
       str_pre = ""
       str_pre += "<tr><th>著者</th><td colspan='3'>#{@metadata[:creator]}</td></tr>" unless @metadata[:creator].nil?
-      str_pre += "<tr><th>作成日</th><td>#{@metadata[:date]}</td></tr>"  unless @metadata[:date].nil?
+      str_pre += "<tr><th>公開日</th><td>#{@metadata[:date]}</td></tr>"  unless @metadata[:date].nil?
       str_pre += "<tr><th>更新日</th><td>#{@metadata[:update]}</td></tr>" unless @metadata[:update].nil?
       str_pre += "<tr><th>タグ</th><td>#{@metadata[:tag]}</td></tr>" unless @metadata[:tag].nil?
       str_pre += "<tr><th>発行</th><td>#{@metadata[:publisher]}</td></tr>" unless @metadata[:publisher].nil?
