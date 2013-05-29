@@ -2,7 +2,10 @@
 "raf" is simple document format.
 refer to : http://garin.jp/doc/Software/raf (this page is japanese)
 
+== install
+  $ sudo gem1.8 install raf-X.X.X.gem
+
+
 == Copyright
 Copyright (c) 2011 garin. See LICENSE.txt for
 further details.
-
