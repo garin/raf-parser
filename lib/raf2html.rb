@@ -52,10 +52,10 @@ module Raf
         next if h[:level] == 1 or h[:level] == 6
 
         if h[:level] == 5
-          str += "<div class=><a href='#raf-head#{h[:level]}-#{i+1}'>#{h[:title]}</a></div>\n"
+          str += "<div class=><a href='#raf-head#{h[:level]}-#{i+1}'><span class='space' />#{h[:title]}</a></div>\n"
         else
           str += index_terminate(h[:level], level_pre)
-          str += "<li><a href='#raf-head#{h[:level]}-#{i+1}'>#{h[:index]} #{h[:title]}</a>\n"
+          str += "<li><a href='#raf-head#{h[:level]}-#{i+1}'>#{h[:index]}#{h[:title]}</a>\n"
           level_pre = h[:level]
         end
       end
