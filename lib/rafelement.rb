@@ -37,7 +37,6 @@ end
 module Raf
   class Element
     def initialize(contents = [])
-      contents = contents.lines if contents.respond_to?("lines")  # ruby1.9 対応
       @contents = contents.to_a
     end
     attr_reader :contents
