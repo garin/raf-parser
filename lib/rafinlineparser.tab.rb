@@ -79,9 +79,9 @@ MANUEDO_OPEN_RE = /\A#{Regexp.quote(MANUEDO_OPEN)}/
 MANUEDO_CLOSE = "/))"
 MANUEDO_CLOSE_RE = /\A#{Regexp.quote(MANUEDO_CLOSE)}/
 
-ERB_OPEN = "<%="
+ERB_OPEN = "&lt;%="
 ERB_OPEN_RE = /\A#{Regexp.quote(ERB_OPEN)}/
-ERB_CLOSE = "%>"
+ERB_CLOSE = "%&gt;"
 ERB_CLOSE_RE = /\A#{Regexp.quote(ERB_CLOSE)}/
 
 BAR = "|"
