@@ -65,7 +65,7 @@ class InlineParser
 	      | VERB_CLOSE
               | IMAGE_OPEN
 
-  image_strings :  image_strings image_string { val.to_s }
+  image_strings :  image_strings image_string { val.join }
                 |  image_string { val[0] }
   image    : IMAGE_OPEN image_strings IMAGE_CLOSE { Image.new(val[1]) }
 
@@ -98,7 +98,7 @@ class InlineParser
               | VERB_OPEN
 	      | VERB_CLOSE
 
-  ruby_strings :  ruby_strings ruby_string { val.to_s }
+  ruby_strings :  ruby_strings ruby_string { val.join }
                |  ruby_string { val[0] }
 
   ruby   : RUBY_OPEN ruby_strings RUBY_CLOSE {
@@ -125,7 +125,7 @@ class InlineParser
                | SLASH { val[0] }
                | BACK_SLASH { val[0] }
 
-  label_strings :  label_strings label_string { val.to_s }
+  label_strings :  label_strings label_string { val.join }
                 |  label_string { val[0] }
 
   label : LABEL_OPEN label_strings LABEL_CLOSE {
@@ -144,7 +144,7 @@ class InlineParser
                    | SLASH { val[0] }
                    | BACK_SLASH { val[0] }
 
-  reference_strings :  reference_strings reference_string { val.to_s }
+  reference_strings :  reference_strings reference_string { val.join }
                     |  reference_string { val[0] }
 
   reference   : REFERENCE_OPEN reference_strings REFERENCE_CLOSE {
@@ -287,9 +287,9 @@ OTHER_RE = Regexp.new(
 
 
 def parse(src)
-  @src = StringScanner.new(src.to_s)
+  @src = StringScanner.new(Array(src).join)
   @pre = ""
-  @@yydebug = true
+  @@yydebug = false
   @view_token_type = false
   do_parse
 end

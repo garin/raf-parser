@@ -149,7 +149,7 @@ attr_reader :metadata, :inline_index, :index
 
 def parse(src)
   @no = 0
-  @src = src.to_a
+  @src = Array(src)
   @line = Line.new("")
   @line_pre = @line.dup
   @indent_stack = []

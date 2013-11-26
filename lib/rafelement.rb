@@ -36,8 +36,8 @@ module Raf
 end
 module Raf
   class Element
-    def initialize(contents = [])
-      @contents = contents.to_a
+    def initialize(contents = "")
+      @contents = Array(contents)
     end
     attr_reader :contents
 
@@ -45,7 +45,7 @@ module Raf
       @contents
     end
     def add=(content)
-      @contents.concat(content.lines.to_a)
+      @contents.concat(content.lines)
     end
   end
 
@@ -218,5 +218,12 @@ end
 class String
   def to_code
     self.lines.to_a.pack('m').tr("012345679+/=\n", 'abcdefghiPSIQ').strip
+  end
+end
+
+# support for ruby-2.0.0
+class Array
+  def to_s
+    self.join
   end
 end

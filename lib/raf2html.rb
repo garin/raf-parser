@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Copyright (C) garin <garin54@gmail.com> 2011
 # See the included file COPYING for details.
 require "raf2html_element"
@@ -40,7 +40,7 @@ module Raf
     end
 
     def body
-      @nodes.map do |node| node.apply end.to_s
+      @nodes.map do |node| node.apply end.join
     end
 
 
@@ -152,4 +152,3 @@ EOL
     end
   end
 end
-
