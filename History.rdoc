@@ -1,9 +1,14 @@
+== 0.1.0 2013-11-26
+* Ruby-2.0.0 をサポート
+* Ruby-1.8.x, Ruby-1.9.x のサポートを終了
+* ERB書式(<%=...%>)を正しく処理できていなかった問題を修正
+
 == 0.0.5 2012-12-12
 * supported ruby1.8 only
 
 == 0.0.4 2012-12-10
 * added "-*- encoding: utf-8 -*-" in code files.
-* support ruby1.9 
+* support ruby1.9
 
 == 0.0.3 2011-04-10
 * typo fix
