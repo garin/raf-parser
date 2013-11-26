@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Copyright (C) garin <garin54@gmail.com> 2011
 # See the included file COPYING for details.
 require "rafblockparser.tab"
@@ -144,7 +144,6 @@ module Raf
       "<a href='#{@contents[1]}' title='#{@contents[1]}'>#{@contents[0]}</a>"
     end
   end
-
 
   class Plain < Element
     def apply
