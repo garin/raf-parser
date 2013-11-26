@@ -1,11 +1,15 @@
 = raf
 "raf" is simple document format.
-refer to : http://garin.jp/doc/Software/raf (this page is japanese)
+refer to : http://garin.jp/doc/raf/raf (this page is japanese)
 
 == install
-  $ sudo gem1.8 install raf-X.X.X.gem
+  // check ruby version
+  $ ruby -v
+  ruby 2.0.0p353 (2013-11-22 revision 43784) [x86_64-linux]
 
+  // raf gem package install 
+  $ gem install raf
 
 == Copyright
-Copyright (c) 2011 garin. See LICENSE.txt for
+Copyright (c) 2011-2013 garin. See LICENSE.txt for
 further details.
