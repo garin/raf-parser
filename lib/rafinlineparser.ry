@@ -1,7 +1,7 @@
 # Copyright (C) garin <garin54@gmail.com> 2011
 # See the included file COPYING for details.
 class InlineParser
-  token EM_OPEN EM_CLOSE ITALIC_OPEN ITALIC_CLOSE STRIKE_OPEN STRIKE_CLOSE LABEL_OPEN LABEL_CLOSE REFERENCE_OPEN REFERENCE_CLOSE VERB_OPEN VERB_CLOSE ERB_OPEN ERB_CLOSE FOOTNOTE_OPEN FOOTNOTE_CLOSE RUBY_OPEN RUBY_CLOSE IMAGE_OPEN IMAGE_CLOSE MANUEDO_OPEN MANUEDO_CLOSE OTHER
+  token EM_OPEN EM_CLOSE ITALIC_OPEN ITALIC_CLOSE STRIKE_OPEN STRIKE_CLOSE LABEL_OPEN LABEL_CLOSE REFERENCE_OPEN REFERENCE_CLOSE VERB_OPEN VERB_CLOSE ERB_OPEN ERB_CLOSE HERB_OPEN FOOTNOTE_OPEN FOOTNOTE_CLOSE RUBY_OPEN RUBY_CLOSE IMAGE_OPEN IMAGE_CLOSE MANUEDO_OPEN MANUEDO_CLOSE OTHER
   options no_result_var
   rule
   content :
@@ -20,6 +20,7 @@ class InlineParser
            | image
            | verb
            | erb
+           | herb
            | manuedo
            | normal_strings
 
@@ -49,6 +50,7 @@ class InlineParser
               | MANUEDO_CLOSE
               | ERB_OPEN
               | ERB_CLOSE
+              | HERB_OPEN
               | REFERENCE_OPEN
               | REFERENCE_CLOSE
               | LABEL_OPEN
@@ -78,6 +80,7 @@ class InlineParser
               | MANUEDO_CLOSE
               | ERB_OPEN
               | ERB_CLOSE
+              | HERB_OPEN
               | REFERENCE_OPEN
               | REFERENCE_CLOSE
               | LABEL_OPEN
@@ -101,6 +104,9 @@ class InlineParser
   # --- erb
   erb      : ERB_OPEN verb_string  ERB_CLOSE {
              e = ERB.new("<%= #{val[1]} %>")
+             Plain.new(e.result) }
+  herb     : HERB_OPEN verb_string  ERB_CLOSE {
+             e = ERB.new("<% #{val[1]} %>")
              Plain.new(e.result) }
   # --- erb end
   # --- manuedo
@@ -151,6 +157,7 @@ class InlineParser
               | MANUEDO_CLOSE
               | ERB_OPEN
               | ERB_CLOSE
+              | HERB_OPEN
               | REFERENCE_OPEN
               | REFERENCE_CLOSE
               | LABEL_OPEN
@@ -242,13 +249,16 @@ ERB_OPEN_RE = /\A#{Regexp.quote(ERB_OPEN)}/
 ERB_CLOSE = "%>"
 ERB_CLOSE_RE = /\A#{Regexp.quote(ERB_CLOSE)}/
 
+HERB_OPEN = "<%"
+HERB_OPEN_RE = /\A#{Regexp.quote(HERB_OPEN)}/
+
 # URL = "URL:"
 # URL_RE = /\A#{Regexp.quote(URL)}/
 
 #other_re_mode = Regexp::EXTENDED
 other_re_mode = Regexp::MULTILINE
 OTHER_RE = Regexp.new(
-                      "\\A.+?(?=#{Regexp.quote(EM_OPEN)}|#{Regexp.quote(EM_CLOSE)}|#{Regexp.quote(ITALIC_OPEN)}|#{Regexp.quote(ITALIC_CLOSE)}|#{Regexp.quote(STRIKE_OPEN)}|#{Regexp.quote(STRIKE_CLOSE)}|#{Regexp.quote(FOOTNOTE_OPEN)}|#{Regexp.quote(FOOTNOTE_CLOSE)}|#{Regexp.quote(RUBY_OPEN)}|#{Regexp.quote(RUBY_CLOSE)}|#{Regexp.quote(IMAGE_OPEN)}|#{Regexp.quote(IMAGE_CLOSE)}|#{Regexp.quote(LABEL_OPEN)}|#{Regexp.quote(LABEL_CLOSE)}|#{Regexp.quote(LABEL_HTML_OPEN)}|#{Regexp.quote(LABEL_HTML_CLOSE)}|#{Regexp.quote(REFERENCE_OPEN)}|#{Regexp.quote(REFERENCE_CLOSE)}|#{Regexp.quote(REFERENCE_HTML_OPEN)}|#{Regexp.quote(REFERENCE_HTML_CLOSE)}|#{Regexp.quote(MANUEDO_OPEN)}|#{Regexp.quote(MANUEDO_CLOSE)}|#{Regexp.quote(VERB_OPEN)}|#{Regexp.quote(VERB_CLOSE)}|#{Regexp.quote(ERB_OPEN)}|#{Regexp.quote(ERB_CLOSE)})", other_re_mode)
+                      "\\A.+?(?=#{Regexp.quote(EM_OPEN)}|#{Regexp.quote(EM_CLOSE)}|#{Regexp.quote(ITALIC_OPEN)}|#{Regexp.quote(ITALIC_CLOSE)}|#{Regexp.quote(STRIKE_OPEN)}|#{Regexp.quote(STRIKE_CLOSE)}|#{Regexp.quote(FOOTNOTE_OPEN)}|#{Regexp.quote(FOOTNOTE_CLOSE)}|#{Regexp.quote(RUBY_OPEN)}|#{Regexp.quote(RUBY_CLOSE)}|#{Regexp.quote(IMAGE_OPEN)}|#{Regexp.quote(IMAGE_CLOSE)}|#{Regexp.quote(LABEL_OPEN)}|#{Regexp.quote(LABEL_CLOSE)}|#{Regexp.quote(LABEL_HTML_OPEN)}|#{Regexp.quote(LABEL_HTML_CLOSE)}|#{Regexp.quote(REFERENCE_OPEN)}|#{Regexp.quote(REFERENCE_CLOSE)}|#{Regexp.quote(REFERENCE_HTML_OPEN)}|#{Regexp.quote(REFERENCE_HTML_CLOSE)}|#{Regexp.quote(MANUEDO_OPEN)}|#{Regexp.quote(MANUEDO_CLOSE)}|#{Regexp.quote(VERB_OPEN)}|#{Regexp.quote(VERB_CLOSE)}|#{Regexp.quote(ERB_OPEN)}|#{Regexp.quote(ERB_CLOSE)}|#{Regexp.quote(HERB_OPEN)})", other_re_mode)
 
 def parse(src)
   @src = StringScanner.new(Array(src).join)
@@ -368,6 +378,10 @@ def next_token
     puts "i: ERB_CLOSE: #{ret}" if @view_token_type
     @pre << ret
     [:ERB_CLOSE, ret]
+  elsif ret = @src.scan(HERB_OPEN_RE)
+    puts "i: HERB_OPEN: #{ret}" if @view_token_type
+    @pre << ret
+    [:HERB_OPEN, ret]
   elsif ret = @src.scan(OTHER_RE)
     puts "i: OTHER_RE: #{ret}" if @view_token_type
     @pre << ret
