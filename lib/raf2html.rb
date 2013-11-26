@@ -18,7 +18,7 @@ module Raf
 
       @raf = BlockParser.new
       @metadata = setup_metadata
-      @nodes = @raf.parse src.map {|s| CGI.escapeHTML(s) }
+      @nodes = @raf.parse src
     end
 
     def setup_metadata

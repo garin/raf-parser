@@ -147,7 +147,7 @@ module Raf
 
   class Plain < Element
     def apply
-      "#{newline_to_br(@contents.join(""))}"
+      "#{newline_to_br(CGI.escapeHTML(@contents.join))}"
     end
   end
 

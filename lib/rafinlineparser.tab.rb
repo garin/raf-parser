@@ -64,9 +64,9 @@ REFERENCE_OPEN_RE = /\A#{Regexp.quote(REFERENCE_OPEN)}/
 REFERENCE_CLOSE = '>))'
 REFERENCE_CLOSE_RE = /\A#{Regexp.quote(REFERENCE_CLOSE)}/
 
-REFERENCE_HTML_OPEN = '((&lt;'
+REFERENCE_HTML_OPEN = '((<'
 REFERENCE_HTML_OPEN_RE = /\A#{Regexp.quote(REFERENCE_HTML_OPEN)}/
-REFERENCE_HTML_CLOSE = '&gt;))'
+REFERENCE_HTML_CLOSE = '>))'
 REFERENCE_HTML_CLOSE_RE = /\A#{Regexp.quote(REFERENCE_HTML_CLOSE)}/
 
 VERB_OPEN = "(('"
@@ -79,9 +79,9 @@ MANUEDO_OPEN_RE = /\A#{Regexp.quote(MANUEDO_OPEN)}/
 MANUEDO_CLOSE = "/))"
 MANUEDO_CLOSE_RE = /\A#{Regexp.quote(MANUEDO_CLOSE)}/
 
-ERB_OPEN = "&lt;%="
+ERB_OPEN = "<%="
 ERB_OPEN_RE = /\A#{Regexp.quote(ERB_OPEN)}/
-ERB_CLOSE = "%&gt;"
+ERB_CLOSE = "%>"
 ERB_CLOSE_RE = /\A#{Regexp.quote(ERB_CLOSE)}/
 
 BAR = "|"
