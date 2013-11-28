@@ -6,6 +6,9 @@ require "cgi"
 
 module Raf
   class Raf2Html
+    VERSION="0.0.2"
+    RELEASE="2011-04-07"
+
     def initialize(src, options = {})
       @debug = true
 
