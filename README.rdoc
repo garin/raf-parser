@@ -1,0 +1,24 @@
+= raf
+"raf" is simple document format.
+raf project is raf meta package project.
+
+== INSTALLATION
+  // check ruby version
+  $ ruby -v
+  ruby 2.0.0p353 (2013-11-22 revision 43784) [x86_64-linux]
+
+  // raf gem package install
+  $ gem install raf
+
+== INCLUDE PACKAGES
+* raf-parser
+  * https://github.com/garin/raf-parser
+* raf2html
+  * https://github.com/garin/raf2html
+
+== Read more
+Official Web Site : http://garin.jp/doc/raf/raf (this page is japanese)
+
+== Copyright
+Copyright (c) 2011-2013 garin. See LICENSE.txt for
+further details.
