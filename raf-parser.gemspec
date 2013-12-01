@@ -1,7 +1,7 @@
 # coding: utf-8
 
 Gem::Specification.new do |spec|
-  spec.name          = "raf"
+  spec.name          = "raf-parser"
   spec.version       = `cat VERSION` 
   spec.authors       = ["garin"]
   spec.email         = ["garin54@gmail.com"]
