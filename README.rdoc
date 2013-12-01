@@ -1,4 +1,4 @@
-= raf
+= raf-parser
 "raf" is simple document format.
 refer to : http://garin.jp/doc/raf/raf (this page is japanese)
 
@@ -8,23 +8,11 @@ refer to : http://garin.jp/doc/raf/raf (this page is japanese)
   ruby 2.0.0p353 (2013-11-22 revision 43784) [x86_64-linux]
 
   // raf gem package install
-  $ gem install raf
+  $ gem install raf-parser
 
 == UTILITIES
-=== raf
+=== raf-parser
 print raf format version.
-
-=== raf2html
-Raf format to HTML format conveter.
-
-+ Usage
-  // edit
-  $ vi mydoc.raf
-  = This is My document
-  raf is simple document format.
-
-  // to html
-  $ raf2html mydoc.raf > mydoc.html
 
 == Read more
 Official Web Site : http://garin.jp/doc/raf/raf (this page is japanese)
