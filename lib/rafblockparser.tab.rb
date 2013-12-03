@@ -9,6 +9,7 @@ require 'racc/parser.rb'
 require "parserutility"
 require "rafinlineparser.tab"
 require "rafelement"
+require "erb"
 
 module Raf
 
@@ -47,6 +48,9 @@ attr_reader :metadata, :inline_index, :index
 
 def parse(src)
   @no = 0
+  # srcをerbで処理
+  src = ERB.new(src.join).result(binding).split("\n").map {|s| "#{s}\n"}
+
   @src = Array(src)
   @line = Line.new("")
   @line_pre = @line.dup
