@@ -182,6 +182,12 @@ module Raf
     end
   end
 
+  class Code < Element
+    def apply
+      "<Code>#{@contents.map{|c| c.apply}}</Code>"
+    end
+  end
+
   class Ruby < Element
     def apply
       "<Ruby>Base:#{@contents[0]},Text:#{@contents[1]}</Ruby>"
