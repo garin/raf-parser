@@ -143,6 +143,12 @@ module Raf
   # -- Blocks end
 
   # -- Inlines
+  class Empty < Element
+    def apply
+      ""
+    end
+  end
+
   class Plain < Element
     def apply
       "#{contents}"
