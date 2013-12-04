@@ -188,6 +188,12 @@ module Raf
     end
   end
 
+  class Kbd < Element
+    def apply
+      "<Kbd>#{@contents.map{|c| c.apply}}</Kbd>"
+    end
+  end
+
   class Ruby < Element
     def apply
       "<Ruby>Base:#{@contents[0]},Text:#{@contents[1]}</Ruby>"
