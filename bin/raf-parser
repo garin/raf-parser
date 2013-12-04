@@ -11,7 +11,7 @@ opt = OptionParser.new do |opt|
   opt.release = Raf::RELEASE
   opt.banner = <<EOL
 "raf" is simple document format.
-Read more: https://github.com/garin/raf
+Read more: https://github.com/garin/raf-parser
 EOL
 end
 
