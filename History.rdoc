@@ -1,3 +1,8 @@
+== 1.0.2 (2013-12-04)
+* update raf-parser: v0.2.1
+* update raf2html : v0.0.5
+
+
 == 1.0.1 (2013-12-03)
 * update raf2html to v0.0.4
 
