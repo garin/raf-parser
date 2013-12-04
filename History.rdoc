@@ -1,3 +1,7 @@
+== 1.0.4 (2031-12-05)
+* update raf2html : v0.0.7
+* update raf-parser: v0.2.2
+
 == 1.0.3 (2013-12-05)
 * update raf2html : v0.0.6
 
