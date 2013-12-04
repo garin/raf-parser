@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+# Copyright (C) garin <garin54@gmail.com> 2011-2013
+# See the included file COPYING for details.
+require "optparse"
+
+opt = OptionParser.new do |opt|
+  opt.version = File.readlines(File.join(File.dirname(__FILE__),"../VERSION"))[0].strip
+  opt.release = File.readlines(File.join(File.dirname(__FILE__),"../RELEASE"))[0].strip
+
+  opt.banner = <<EOL
+"raf" is simple document format.
+Read more: https://github.com/garin/raf
+EOL
+end
+
+opt.parse!(ARGV)
+puts opt.help
