@@ -1,7 +1,7 @@
 # Copyright (C) garin <garin54@gmail.com> 2011
 # See the included file COPYING for details.
 class InlineParser
-  token EM_OPEN EM_CLOSE ITALIC_OPEN ITALIC_CLOSE STRIKE_OPEN STRIKE_CLOSE CODE_OPEN CODE_CLOSE KBD_OPEN KBD_CLOSE LABEL_OPEN LABEL_CLOSE REFERENCE_OPEN REFERENCE_CLOSE VERB_OPEN VERB_CLOSE FOOTNOTE_OPEN FOOTNOTE_CLOSE RUBY_OPEN RUBY_CLOSE IMAGE_OPEN IMAGE_CLOSE MANUEDO_OPEN MANUEDO_CLOSE OTHER
+  token EM_OPEN EM_CLOSE ITALIC_OPEN ITALIC_CLOSE STRIKE_OPEN STRIKE_CLOSE CODE_OPEN CODE_CLOSE KBD_OPEN KBD_CLOSE LABEL_OPEN LABEL_CLOSE REFERENCE_OPEN REFERENCE_CLOSE VERB_OPEN VERB_CLOSE FOOTNOTE_OPEN FOOTNOTE_CLOSE RUBY_OPEN RUBY_CLOSE VARIABLE_OPEN VARIABLE_CLOSE IMAGE_OPEN IMAGE_CLOSE MANUEDO_OPEN MANUEDO_CLOSE OTHER
   options no_result_var
   rule
   content :
@@ -18,6 +18,7 @@ class InlineParser
            | label
            | reference
            | ruby
+           | variable
            | footnote
            | image
            | verb
@@ -52,6 +53,8 @@ class InlineParser
               | KBD_CLOSE
               | RUBY_OPEN
               | RUBY_CLOSE
+              | VARIABLE_OPEN
+              | VARIABLE_CLOSE
               | MANUEDO_OPEN
               | MANUEDO_CLOSE
               | REFERENCE_OPEN
@@ -101,10 +104,61 @@ class InlineParser
   ruby   : RUBY_OPEN ruby_strings RUBY_CLOSE {
                   base, text = val[1].split("|",2)
                   text ||= base
+# 		  parser = InlineParser.new
+# 		  text = parser.parse(text).map do |n| n.apply end
                   Ruby.new([base, text])
                 }
 
   # --- ruby end
+  # --- variable start
+  variable_string : OTHER
+                  | EM_OPEN
+                  | EM_CLOSE
+                  | ITALIC_OPEN
+                  | ITALIC_CLOSE
+                  | STRIKE_OPEN
+                  | STRIKE_CLOSE
+                  | CODE_OPEN
+                  | CODE_CLOSE
+                  | KBD_OPEN
+                  | KBD_CLOSE
+                  | IMAGE_OPEN
+                  | IMAGE_CLOSE
+                  | MANUEDO_OPEN
+                  | MANUEDO_CLOSE
+                  | REFERENCE_OPEN
+                  | REFERENCE_CLOSE
+                  | LABEL_OPEN
+                  | LABEL_CLOSE
+                  | RUBY_OPEN
+                  | RUBY_CLOSE
+                  | VARIABLE_OPEN
+                  | FOOTNOTE_OPEN
+                  | FOOTNOTE_CLOSE
+                  | VERB_OPEN
+                  | VERB_CLOSE
+
+  variable_strings :  variable_strings variable_string { val.join }
+               |  variable_string { val[0] }
+
+  variable   : VARIABLE_OPEN variable_strings VARIABLE_CLOSE {
+                  base, text = val[1].split("=",2)
+		  unless text.nil?
+  		    @variables ||= {}
+		    @variables[base] = text
+		    Empty.new("")
+		  else
+		    value = @variables[base]
+		    unless value.nil?
+		      parser = InlineParser.new
+ 		      value = parser.parse(value).map do |n| n.apply end
+		    else	# 変数が未定義
+		      value = base
+		    end
+		    Variable.new(value)
+		  end
+                }
+  # --- variable end
   # --- manuedo
   manuedo  : MANUEDO_OPEN content MANUEDO_CLOSE { Manuedo.new(val[1]) }
 
@@ -161,6 +215,8 @@ class InlineParser
               | LABEL_CLOSE
               | RUBY_OPEN
               | RUBY_CLOSE
+              | VARIABLE_OPEN
+              | VARIABLE_CLOSE
               | FOOTNOTE_OPEN
               | FOOTNOTE_CLOSE
               | VERB_OPEN
@@ -211,6 +267,11 @@ RUBY_OPEN_RE = /\A#{Regexp.quote(RUBY_OPEN)}/
 RUBY_CLOSE = '^))'
 RUBY_CLOSE_RE = /\A#{Regexp.quote(RUBY_CLOSE)}/
 
+VARIABLE_OPEN = '((@'
+VARIABLE_OPEN_RE = /\A#{Regexp.quote(VARIABLE_OPEN)}/
+VARIABLE_CLOSE = '@))'
+VARIABLE_CLOSE_RE = /\A#{Regexp.quote(VARIABLE_CLOSE)}/
+
 FOOTNOTE_OPEN = '((['
 FOOTNOTE_OPEN_RE = /\A#{Regexp.quote(FOOTNOTE_OPEN)}/
 FOOTNOTE_CLOSE = ']))'
@@ -257,7 +318,7 @@ MANUEDO_CLOSE_RE = /\A#{Regexp.quote(MANUEDO_CLOSE)}/
 #other_re_mode = Regexp::EXTENDED
 other_re_mode = Regexp::MULTILINE
 OTHER_RE = Regexp.new(
-                      "\\A.+?(?=#{Regexp.quote(EM_OPEN)}|#{Regexp.quote(EM_CLOSE)}|#{Regexp.quote(ITALIC_OPEN)}|#{Regexp.quote(ITALIC_CLOSE)}|#{Regexp.quote(STRIKE_OPEN)}|#{Regexp.quote(STRIKE_CLOSE)}|#{Regexp.quote(CODE_OPEN)}|#{Regexp.quote(CODE_CLOSE)}|#{Regexp.quote(KBD_OPEN)}|#{Regexp.quote(KBD_CLOSE)}|#{Regexp.quote(FOOTNOTE_OPEN)}|#{Regexp.quote(FOOTNOTE_CLOSE)}|#{Regexp.quote(RUBY_OPEN)}|#{Regexp.quote(RUBY_CLOSE)}|#{Regexp.quote(IMAGE_OPEN)}|#{Regexp.quote(IMAGE_CLOSE)}|#{Regexp.quote(LABEL_OPEN)}|#{Regexp.quote(LABEL_CLOSE)}|#{Regexp.quote(LABEL_HTML_OPEN)}|#{Regexp.quote(LABEL_HTML_CLOSE)}|#{Regexp.quote(REFERENCE_OPEN)}|#{Regexp.quote(REFERENCE_CLOSE)}|#{Regexp.quote(REFERENCE_HTML_OPEN)}|#{Regexp.quote(REFERENCE_HTML_CLOSE)}|#{Regexp.quote(MANUEDO_OPEN)}|#{Regexp.quote(MANUEDO_CLOSE)}|#{Regexp.quote(VERB_OPEN)}|#{Regexp.quote(VERB_CLOSE)})", other_re_mode)
+                      "\\A.+?(?=#{Regexp.quote(EM_OPEN)}|#{Regexp.quote(EM_CLOSE)}|#{Regexp.quote(ITALIC_OPEN)}|#{Regexp.quote(ITALIC_CLOSE)}|#{Regexp.quote(STRIKE_OPEN)}|#{Regexp.quote(STRIKE_CLOSE)}|#{Regexp.quote(CODE_OPEN)}|#{Regexp.quote(CODE_CLOSE)}|#{Regexp.quote(KBD_OPEN)}|#{Regexp.quote(KBD_CLOSE)}|#{Regexp.quote(FOOTNOTE_OPEN)}|#{Regexp.quote(FOOTNOTE_CLOSE)}|#{Regexp.quote(RUBY_OPEN)}|#{Regexp.quote(RUBY_CLOSE)}|#{Regexp.quote(VARIABLE_OPEN)}|#{Regexp.quote(VARIABLE_CLOSE)}|#{Regexp.quote(IMAGE_OPEN)}|#{Regexp.quote(IMAGE_CLOSE)}|#{Regexp.quote(LABEL_OPEN)}|#{Regexp.quote(LABEL_CLOSE)}|#{Regexp.quote(LABEL_HTML_OPEN)}|#{Regexp.quote(LABEL_HTML_CLOSE)}|#{Regexp.quote(REFERENCE_OPEN)}|#{Regexp.quote(REFERENCE_CLOSE)}|#{Regexp.quote(REFERENCE_HTML_OPEN)}|#{Regexp.quote(REFERENCE_HTML_CLOSE)}|#{Regexp.quote(MANUEDO_OPEN)}|#{Regexp.quote(MANUEDO_CLOSE)}|#{Regexp.quote(VERB_OPEN)}|#{Regexp.quote(VERB_CLOSE)})", other_re_mode)
 
 def parse(src)
   @src = StringScanner.new(Array(src).join)
@@ -361,6 +422,14 @@ def next_token
     puts "i: RUBY_CLOSE: #{ret}" if @view_token_type
     @pre << ret
     [:RUBY_CLOSE, ret]
+  elsif ret = @src.scan(VARIABLE_OPEN_RE)
+    puts "i: VARIABLE_OPEN: #{ret}" if @view_token_type
+    @pre << ret
+    [:VARIABLE_OPEN, ret]
+  elsif ret = @src.scan(VARIABLE_CLOSE_RE)
+    puts "i: VARIABLE_CLOSE: #{ret}" if @view_token_type
+    @pre << ret
+    [:VARIABLE_CLOSE, ret]
   elsif ret = @src.scan(FOOTNOTE_OPEN_RE)
     puts "i: FOOTNOTE_OPEN: #{ret}" if @view_token_type
     @pre << ret

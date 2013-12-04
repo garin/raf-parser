@@ -206,6 +206,12 @@ module Raf
     end
   end
 
+  class Variable < Element
+    def apply
+      "<Variable>#{@contents}</Variable>"
+    end
+  end
+
   class Footnote < Element
     #@contents = [contents, id]
     def apply
