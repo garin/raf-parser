@@ -186,7 +186,7 @@ class InlineParser
                   puts "opt: #{@options}"
                   title, uri = val[1].split("|",2)
                   uri ||= title
-                  uri = "#" + uri.to_code if uri.gsub(/^\s*https*:\/\//,"") == uri
+                  uri = "#" + uri.to_code if uri.gsub(/^\s*.*\/\//,"") == uri
                   Reference.new([title, uri])
                 }
   # --- reference : end
