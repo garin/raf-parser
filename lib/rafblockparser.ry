@@ -138,8 +138,8 @@ class Line
 end
 
 
-def initialize
-  @inline_parser = InlineParser.new
+def initialize(options = {})
+  @inline_parser = InlineParser.new(options)
   @metadata = {}
   @inline_index = @inline_parser.index
   @index = {}

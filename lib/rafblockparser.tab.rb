@@ -37,8 +37,8 @@ class Line
 end
 
 
-def initialize
-  @inline_parser = InlineParser.new
+def initialize(options = {})
+  @inline_parser = InlineParser.new(options)
   @metadata = {}
   @inline_index = @inline_parser.index
   @index = {}
@@ -49,7 +49,7 @@ attr_reader :metadata, :inline_index, :index
 def parse(src)
   @no = 0
   # srcをerbで処理
-  src = ERB.new(src.join).result(binding).split("\n").map {|s| "#{s}\n"}
+  src = ERB.new(src.join,4).result(binding.taint).split("\n").map {|s| "#{s}\n"}
 
   @src = Array(src)
   @line = Line.new("")

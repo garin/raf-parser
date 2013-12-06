@@ -14,7 +14,7 @@ require 'rafelement'
 module Raf
 class InlineParser < Racc::Parser
 
-module_eval(<<'...end rafinlineparser.ry/module_eval...', 'rafinlineparser.ry', 234)
+module_eval(<<'...end rafinlineparser.ry/module_eval...', 'rafinlineparser.ry', 235)
 include ParserUtility
 
 EM_OPEN = '((*'
@@ -107,7 +107,8 @@ def parse(src)
   @view_token_type = false
   do_parse
 end
-def initialize
+def initialize(options = {})
+  @options = options
   @index = {}
 end
 attr_reader :index
@@ -1052,7 +1053,8 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 182)
 
 module_eval(<<'.,.,', 'rafinlineparser.ry', 185)
   def _reduce_118(val, _values)
-                      title, uri = val[1].split("|",2)
+                      puts "opt: #{@options}"
+                  title, uri = val[1].split("|",2)
                   uri ||= title
                   uri = "#" + uri.to_code if uri.gsub(/^\s*https*:\/\//,"") == uri
                   Reference.new([title, uri])
@@ -1114,31 +1116,31 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 185)
 
 # reduce 145 omitted
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 220)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 221)
   def _reduce_146(val, _values)
      val 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 222)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 223)
   def _reduce_147(val, _values)
       Verb.new(val[1])
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 226)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 227)
   def _reduce_148(val, _values)
      Plain.new(val[0]) 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 227)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 228)
   def _reduce_149(val, _values)
       Plain.new([val[0].contents, val[1]]) 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 229)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 230)
   def _reduce_150(val, _values)
      val[0] 
   end
