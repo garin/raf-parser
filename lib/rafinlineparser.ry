@@ -183,10 +183,16 @@ class InlineParser
                     |  reference_string { val[0] }
 
   reference   : REFERENCE_OPEN reference_strings REFERENCE_CLOSE {
-                  puts "opt: #{@options}"
                   title, uri = val[1].split("|",2)
                   uri ||= title
-                  uri = "#" + uri.to_code if uri.gsub(/^\s*.*\/\//,"") == uri
+		  unless uri.gsub(/^\s*.*\/\//,"") == uri
+                    if uri.strip[-2,2] == ".%" and ! @options[:suffix].nil?
+		      uri.slice!(-2,2)
+		      uri = "#{uri}#{@options[:suffix]}"
+		    end
+		  else
+                    uri = "#" + uri.to_code
+		  end
                   Reference.new([title, uri])
                 }
   # --- reference : end

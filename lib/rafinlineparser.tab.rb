@@ -14,7 +14,7 @@ require 'rafelement'
 module Raf
 class InlineParser < Racc::Parser
 
-module_eval(<<'...end rafinlineparser.ry/module_eval...', 'rafinlineparser.ry', 237)
+module_eval(<<'...end rafinlineparser.ry/module_eval...', 'rafinlineparser.ry', 241)
 include ParserUtility
 
 EM_OPEN = '((*'
@@ -1053,12 +1053,16 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 182)
 
 module_eval(<<'.,.,', 'rafinlineparser.ry', 185)
   def _reduce_118(val, _values)
-                      puts "opt: #{@options}"
-                  title, uri = val[1].split("|",2)
+                      title, uri = val[1].split("|",2)
                   uri ||= title
-
-#                  uri = "#" + uri.to_code if uri.gsub(/^\s*https*:\/\//,"") == uri
-                  uri = "#" + uri.to_code if uri.gsub(/^\s*.*\/\//,"") == uri
+		  unless uri.gsub(/^\s*.*\/\//,"") == uri
+                    if uri.strip[-2,2] == ".%" and ! @options[:suffix].nil?
+		      uri.slice!(-2,2)
+		      uri = "#{uri}#{@options[:suffix]}"
+		    end
+		  else
+                    uri = "#" + uri.to_code
+		  end
                   Reference.new([title, uri])
                 
   end
@@ -1118,31 +1122,31 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 185)
 
 # reduce 145 omitted
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 223)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 227)
   def _reduce_146(val, _values)
      val 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 225)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 229)
   def _reduce_147(val, _values)
       Verb.new(val[1])
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 229)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 233)
   def _reduce_148(val, _values)
      Plain.new(val[0]) 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 230)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 234)
   def _reduce_149(val, _values)
       Plain.new([val[0].contents, val[1]]) 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 232)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 236)
   def _reduce_150(val, _values)
      val[0] 
   end
