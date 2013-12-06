@@ -166,7 +166,7 @@ module Raf
   class Reference < Element
     # @contents = [title, uri]
     def apply
-      "#{@contents}"
+      "<Reference>Title:#{@contents[0]},Url:#{@contents[1]}</Reference>"
     end
   end
 
