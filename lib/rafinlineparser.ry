@@ -143,20 +143,16 @@ class InlineParser
 
   variable   : VARIABLE_OPEN variable_strings VARIABLE_CLOSE {
                   base, text = val[1].split("=",2)
-		  unless text.nil?
-  		    @variables ||= {}
-		    @variables[base] = text
-		    Empty.new("")
-		  else
-		    value = @variables[base]
-		    unless value.nil?
-		      parser = InlineParser.new
- 		      value = parser.parse(value).map do |n| n.apply end
-		    else	# 変数が未定義
-		      value = base
-		    end
-		    Variable.new(value)
+		  @variables ||= {}
+		  @variables[base] = text unless text.nil?
+		  value = @variables[base]
+		  unless value.nil?
+		    parser = InlineParser.new
+ 		    value = parser.parse(value).map do |n| n.apply end
+		  else	# 変数が未定義
+		    value = base
 		  end
+		  Variable.new(value)
                 }
   # --- variable end
   # --- manuedo

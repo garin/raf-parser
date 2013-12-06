@@ -14,7 +14,7 @@ require 'rafelement'
 module Raf
 class InlineParser < Racc::Parser
 
-module_eval(<<'...end rafinlineparser.ry/module_eval...', 'rafinlineparser.ry', 238)
+module_eval(<<'...end rafinlineparser.ry/module_eval...', 'rafinlineparser.ry', 234)
 include ParserUtility
 
 EM_OPEN = '((*'
@@ -983,49 +983,45 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 141)
 module_eval(<<'.,.,', 'rafinlineparser.ry', 144)
   def _reduce_109(val, _values)
                       base, text = val[1].split("=",2)
-		  unless text.nil?
-  		    @variables ||= {}
-		    @variables[base] = text
-		    Empty.new("")
-		  else
-		    value = @variables[base]
-		    unless value.nil?
-		      parser = InlineParser.new
- 		      value = parser.parse(value).map do |n| n.apply end
-		    else	# 変数が未定義
-		      value = base
-		    end
-		    Variable.new(value)
+		  @variables ||= {}
+		  @variables[base] = text unless text.nil?
+		  value = @variables[base]
+		  unless value.nil?
+		    parser = InlineParser.new
+ 		    value = parser.parse(value).map do |n| n.apply end
+		  else	# 変数が未定義
+		    value = base
 		  end
+		  Variable.new(value)
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 162)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 158)
   def _reduce_110(val, _values)
      Manuedo.new(val[1]) 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 167)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 163)
   def _reduce_111(val, _values)
      val[0] 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 170)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 166)
   def _reduce_112(val, _values)
      val.join 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 171)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 167)
   def _reduce_113(val, _values)
      val[0] 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 174)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 170)
   def _reduce_114(val, _values)
               label, title = val[1].split("|",2)
           title ||= label
@@ -1036,25 +1032,25 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 174)
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 183)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 179)
   def _reduce_115(val, _values)
      val[0] 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 185)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 181)
   def _reduce_116(val, _values)
      val.join 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 186)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 182)
   def _reduce_117(val, _values)
      val[0] 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 189)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 185)
   def _reduce_118(val, _values)
                       title, uri = val[1].split("|",2)
                   uri ||= title
@@ -1118,31 +1114,31 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 189)
 
 # reduce 145 omitted
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 224)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 220)
   def _reduce_146(val, _values)
      val 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 226)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 222)
   def _reduce_147(val, _values)
       Verb.new(val[1])
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 230)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 226)
   def _reduce_148(val, _values)
      Plain.new(val[0]) 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 231)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 227)
   def _reduce_149(val, _values)
       Plain.new([val[0].contents, val[1]]) 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 233)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 229)
   def _reduce_150(val, _values)
      val[0] 
   end
