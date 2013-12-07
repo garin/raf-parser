@@ -192,8 +192,7 @@ class InlineParser
   label_link   : LABEL_LINK_OPEN label_link_strings LABEL_LINK_CLOSE {
                   label, title = val[1].split("|",2)
                   title ||= label
-                  label = "#" + label.to_code
-                  LabelLink.new([label, title])
+                  LabelLink.new([label.to_code, title])
                 }
   # --- label link: end
 
