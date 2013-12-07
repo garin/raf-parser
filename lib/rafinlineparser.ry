@@ -1,7 +1,7 @@
 # Copyright (C) garin <garin54@gmail.com> 2011
 # See the included file COPYING for details.
 class InlineParser
-  token EM_OPEN EM_CLOSE ITALIC_OPEN ITALIC_CLOSE STRIKE_OPEN STRIKE_CLOSE CODE_OPEN CODE_CLOSE KBD_OPEN KBD_CLOSE LABEL_OPEN LABEL_CLOSE REFERENCE_OPEN REFERENCE_CLOSE VERB_OPEN VERB_CLOSE FOOTNOTE_OPEN FOOTNOTE_CLOSE RUBY_OPEN RUBY_CLOSE VARIABLE_OPEN VARIABLE_CLOSE IMAGE_OPEN IMAGE_CLOSE MANUEDO_OPEN MANUEDO_CLOSE OTHER
+  token EM_OPEN EM_CLOSE ITALIC_OPEN ITALIC_CLOSE STRIKE_OPEN STRIKE_CLOSE CODE_OPEN CODE_CLOSE KBD_OPEN KBD_CLOSE LABEL_OPEN LABEL_CLOSE LABEL_LINK_OPEN LABEL_LINK_CLOSE REFERENCE_OPEN REFERENCE_CLOSE VERB_OPEN VERB_CLOSE FOOTNOTE_OPEN FOOTNOTE_CLOSE RUBY_OPEN RUBY_CLOSE VARIABLE_OPEN VARIABLE_CLOSE IMAGE_OPEN IMAGE_CLOSE MANUEDO_OPEN MANUEDO_CLOSE OTHER
   options no_result_var
   rule
   content :
@@ -16,6 +16,7 @@ class InlineParser
            | code
            | kbd
            | label
+           | label_link
            | reference
            | ruby
            | variable
@@ -61,6 +62,8 @@ class InlineParser
               | REFERENCE_CLOSE
               | LABEL_OPEN
               | LABEL_CLOSE
+              | LABEL_LINK_OPEN
+              | LABEL_LINK_CLOSE
               | FOOTNOTE_OPEN
               | FOOTNOTE_CLOSE
               | VERB_OPEN
@@ -92,6 +95,8 @@ class InlineParser
               | REFERENCE_CLOSE
               | LABEL_OPEN
               | LABEL_CLOSE
+              | LABEL_LINK_OPEN
+              | LABEL_LINK_CLOSE
               | RUBY_OPEN
               | FOOTNOTE_OPEN
               | FOOTNOTE_CLOSE
@@ -130,6 +135,8 @@ class InlineParser
                   | REFERENCE_CLOSE
                   | LABEL_OPEN
                   | LABEL_CLOSE
+                  | LABEL_LINK_OPEN
+                  | LABEL_LINK_CLOSE
                   | RUBY_OPEN
                   | RUBY_CLOSE
                   | VARIABLE_OPEN
@@ -176,6 +183,20 @@ class InlineParser
           }
 
   # --- labe end
+  # --- label link: start
+  label_link_string : OTHER { val[0] }
+
+  label_link_strings : label_link_strings label_link_string { val.join }
+                     | label_link_string { val[0] }
+
+  label_link   : LABEL_LINK_OPEN label_link_strings LABEL_LINK_CLOSE {
+                  label, title = val[1].split("|",2)
+                  title ||= label
+                  label = "#" + label.to_code
+                  LabelLink.new([label, title])
+                }
+  # --- label link: end
+
   # --- reference : start
   reference_string : OTHER { val[0] }
 
@@ -216,6 +237,8 @@ class InlineParser
               | REFERENCE_CLOSE
               | LABEL_OPEN
               | LABEL_CLOSE
+              | LABEL_LINK_OPEN
+              | LABEL_LINK_CLOSE
               | RUBY_OPEN
               | RUBY_CLOSE
               | VARIABLE_OPEN
@@ -295,6 +318,11 @@ LABEL_HTML_OPEN_RE = /\A#{Regexp.quote(LABEL_HTML_OPEN)}/
 LABEL_HTML_CLOSE = '&lt;))'
 LABEL_HTML_CLOSE_RE = /\A#{Regexp.quote(LABEL_HTML_CLOSE)}/
 
+LABEL_LINK_OPEN = '((='
+LABEL_LINK_OPEN_RE = /\A#{Regexp.quote(LABEL_LINK_OPEN)}/
+LABEL_LINK_CLOSE = '=))'
+LABEL_LINK_CLOSE_RE = /\A#{Regexp.quote(LABEL_LINK_CLOSE)}/
+
 REFERENCE_OPEN = '((<'
 REFERENCE_OPEN_RE = /\A#{Regexp.quote(REFERENCE_OPEN)}/
 REFERENCE_CLOSE = '>))'
@@ -321,7 +349,7 @@ MANUEDO_CLOSE_RE = /\A#{Regexp.quote(MANUEDO_CLOSE)}/
 #other_re_mode = Regexp::EXTENDED
 other_re_mode = Regexp::MULTILINE
 OTHER_RE = Regexp.new(
-                      "\\A.+?(?=#{Regexp.quote(EM_OPEN)}|#{Regexp.quote(EM_CLOSE)}|#{Regexp.quote(ITALIC_OPEN)}|#{Regexp.quote(ITALIC_CLOSE)}|#{Regexp.quote(STRIKE_OPEN)}|#{Regexp.quote(STRIKE_CLOSE)}|#{Regexp.quote(CODE_OPEN)}|#{Regexp.quote(CODE_CLOSE)}|#{Regexp.quote(KBD_OPEN)}|#{Regexp.quote(KBD_CLOSE)}|#{Regexp.quote(FOOTNOTE_OPEN)}|#{Regexp.quote(FOOTNOTE_CLOSE)}|#{Regexp.quote(RUBY_OPEN)}|#{Regexp.quote(RUBY_CLOSE)}|#{Regexp.quote(VARIABLE_OPEN)}|#{Regexp.quote(VARIABLE_CLOSE)}|#{Regexp.quote(IMAGE_OPEN)}|#{Regexp.quote(IMAGE_CLOSE)}|#{Regexp.quote(LABEL_OPEN)}|#{Regexp.quote(LABEL_CLOSE)}|#{Regexp.quote(LABEL_HTML_OPEN)}|#{Regexp.quote(LABEL_HTML_CLOSE)}|#{Regexp.quote(REFERENCE_OPEN)}|#{Regexp.quote(REFERENCE_CLOSE)}|#{Regexp.quote(REFERENCE_HTML_OPEN)}|#{Regexp.quote(REFERENCE_HTML_CLOSE)}|#{Regexp.quote(MANUEDO_OPEN)}|#{Regexp.quote(MANUEDO_CLOSE)}|#{Regexp.quote(VERB_OPEN)}|#{Regexp.quote(VERB_CLOSE)})", other_re_mode)
+                      "\\A.+?(?=#{Regexp.quote(EM_OPEN)}|#{Regexp.quote(EM_CLOSE)}|#{Regexp.quote(ITALIC_OPEN)}|#{Regexp.quote(ITALIC_CLOSE)}|#{Regexp.quote(STRIKE_OPEN)}|#{Regexp.quote(STRIKE_CLOSE)}|#{Regexp.quote(CODE_OPEN)}|#{Regexp.quote(CODE_CLOSE)}|#{Regexp.quote(KBD_OPEN)}|#{Regexp.quote(KBD_CLOSE)}|#{Regexp.quote(FOOTNOTE_OPEN)}|#{Regexp.quote(FOOTNOTE_CLOSE)}|#{Regexp.quote(RUBY_OPEN)}|#{Regexp.quote(RUBY_CLOSE)}|#{Regexp.quote(VARIABLE_OPEN)}|#{Regexp.quote(VARIABLE_CLOSE)}|#{Regexp.quote(IMAGE_OPEN)}|#{Regexp.quote(IMAGE_CLOSE)}|#{Regexp.quote(LABEL_OPEN)}|#{Regexp.quote(LABEL_CLOSE)}|#{Regexp.quote(LABEL_LINK_OPEN)}|#{Regexp.quote(LABEL_LINK_CLOSE)}|#{Regexp.quote(LABEL_HTML_OPEN)}|#{Regexp.quote(LABEL_HTML_CLOSE)}|#{Regexp.quote(REFERENCE_OPEN)}|#{Regexp.quote(REFERENCE_CLOSE)}|#{Regexp.quote(REFERENCE_HTML_OPEN)}|#{Regexp.quote(REFERENCE_HTML_CLOSE)}|#{Regexp.quote(MANUEDO_OPEN)}|#{Regexp.quote(MANUEDO_CLOSE)}|#{Regexp.quote(VERB_OPEN)}|#{Regexp.quote(VERB_CLOSE)})", other_re_mode)
 
 def parse(src)
   @src = StringScanner.new(Array(src).join)
@@ -386,6 +414,14 @@ def next_token
     puts "i: LABEL_CLOSE: #{ret}" if @view_token_type
     @pre << ret
     [:LABEL_CLOSE, ret]
+  elsif ret = @src.scan(LABEL_LINK_OPEN_RE)
+    @pre << ret
+    puts "i: LABEL_LINK_OPEN: #{ret}" if @view_token_type
+    [:LABEL_LINK_OPEN, ret]
+  elsif ret = @src.scan(LABEL_LINK_CLOSE_RE)
+    puts "i: LABEL_LINK_CLOSE: #{ret}" if @view_token_type
+    @pre << ret
+    [:LABEL_LINK_CLOSE, ret]
   elsif ret = @src.scan(LABEL_HTML_OPEN_RE)
     @pre << ret
     puts "i: LABEL_OPEN: #{ret}" if @view_token_type

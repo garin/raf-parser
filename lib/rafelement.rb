@@ -163,6 +163,13 @@ module Raf
     end
   end
 
+  class LabelLink < Element
+    # @contents = [title, uri]
+    def apply
+      "<LabelLink>Label:#{@contents[0]},Title:#{@contents[1]}</LabelLink>"
+    end
+  end
+
   class Reference < Element
     # @contents = [title, uri]
     def apply
