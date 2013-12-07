@@ -14,7 +14,7 @@ require 'rafelement'
 module Raf
 class InlineParser < Racc::Parser
 
-module_eval(<<'...end rafinlineparser.ry/module_eval...', 'rafinlineparser.ry', 264)
+module_eval(<<'...end rafinlineparser.ry/module_eval...', 'rafinlineparser.ry', 260)
 include ParserUtility
 
 EM_OPEN = '((*'
@@ -1142,13 +1142,9 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 206)
   def _reduce_129(val, _values)
                       title, uri = val[1].split("|",2)
                   uri ||= title
-		  unless uri.gsub(/^\s*.*\/\//,"") == uri
-                    if uri.strip[-2,2] == ".%" and ! @options[:suffix].nil?
-		      uri.slice!(-2,2)
-		      uri = "#{uri}#{@options[:suffix]}"
-		    end
-		  else
-                    uri = "#" + uri.to_code
+                  if uri.strip[-2,2] == ".%" and ! @options[:suffix].nil?
+		    uri.slice!(-2,2)
+		    uri = "#{uri}#{@options[:suffix]}"
 		  end
                   Reference.new([title, uri])
                 
@@ -1213,31 +1209,31 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 206)
 
 # reduce 158 omitted
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 250)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 246)
   def _reduce_159(val, _values)
      val 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 252)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 248)
   def _reduce_160(val, _values)
       Verb.new(val[1])
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 256)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 252)
   def _reduce_161(val, _values)
      Plain.new(val[0]) 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 257)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 253)
   def _reduce_162(val, _values)
       Plain.new([val[0].contents, val[1]]) 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 259)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 255)
   def _reduce_163(val, _values)
      val[0] 
   end

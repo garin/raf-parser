@@ -206,13 +206,9 @@ class InlineParser
   reference   : REFERENCE_OPEN reference_strings REFERENCE_CLOSE {
                   title, uri = val[1].split("|",2)
                   uri ||= title
-		  unless uri.gsub(/^\s*.*\/\//,"") == uri
-                    if uri.strip[-2,2] == ".%" and ! @options[:suffix].nil?
-		      uri.slice!(-2,2)
-		      uri = "#{uri}#{@options[:suffix]}"
-		    end
-		  else
-                    uri = "#" + uri.to_code
+                  if uri.strip[-2,2] == ".%" and ! @options[:suffix].nil?
+		    uri.slice!(-2,2)
+		    uri = "#{uri}#{@options[:suffix]}"
 		  end
                   Reference.new([title, uri])
                 }
