@@ -71,7 +71,12 @@ class InlineParser
               | IMAGE_OPEN
 
   image_strings :  image_strings image_string { val.join }
-                |  image_string { val[0] }
+                |  image_string {
+		     unless @options[:image_base].nil? || @options[:image_base].empty?
+  		       val[0] = File.join(@options[:image_base],val[0]) unless val[0] =~ /^.*:\/\/.*/
+		     end
+		     val[0]
+		}
   image    : IMAGE_OPEN image_strings IMAGE_CLOSE { Image.new(val[1]) }
 
   # --- image end
