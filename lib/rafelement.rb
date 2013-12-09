@@ -226,9 +226,10 @@ module Raf
     end
   end
 
-  class Image < Element
+  class Media < Element
     def apply
-      "<Image>#{@contents}</Image>"
+      # @contents = [Name, Mime::MediaType, Mime::SubType]
+      "<Media>Name:#{@contents[0]},Mime::MediaType:#{@contents[1]},Mime::SubType:#{@contents[2]}</Media>"
     end
   end
 
@@ -244,7 +245,6 @@ module Raf
     end
   end
 end
-
 
 class String
   def to_code

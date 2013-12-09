@@ -1,7 +1,7 @@
 # Copyright (C) garin <garin54@gmail.com> 2011
 # See the included file COPYING for details.
 class InlineParser
-  token EM_OPEN EM_CLOSE ITALIC_OPEN ITALIC_CLOSE STRIKE_OPEN STRIKE_CLOSE CODE_OPEN CODE_CLOSE KBD_OPEN KBD_CLOSE LABEL_OPEN LABEL_CLOSE LABEL_LINK_OPEN LABEL_LINK_CLOSE REFERENCE_OPEN REFERENCE_CLOSE VERB_OPEN VERB_CLOSE FOOTNOTE_OPEN FOOTNOTE_CLOSE RUBY_OPEN RUBY_CLOSE VARIABLE_OPEN VARIABLE_CLOSE IMAGE_OPEN IMAGE_CLOSE MANUEDO_OPEN MANUEDO_CLOSE OTHER
+  token EM_OPEN EM_CLOSE ITALIC_OPEN ITALIC_CLOSE STRIKE_OPEN STRIKE_CLOSE CODE_OPEN CODE_CLOSE KBD_OPEN KBD_CLOSE LABEL_OPEN LABEL_CLOSE LABEL_LINK_OPEN LABEL_LINK_CLOSE REFERENCE_OPEN REFERENCE_CLOSE VERB_OPEN VERB_CLOSE FOOTNOTE_OPEN FOOTNOTE_CLOSE RUBY_OPEN RUBY_CLOSE VARIABLE_OPEN VARIABLE_CLOSE MEDIA_OPEN MEDIA_CLOSE MANUEDO_OPEN MANUEDO_CLOSE OTHER
   options no_result_var
   rule
   content :
@@ -21,7 +21,7 @@ class InlineParser
            | ruby
            | variable
            | footnote
-           | image
+           | media
            | verb
            | manuedo
            | normal_strings
@@ -40,8 +40,8 @@ class InlineParser
 
   # --- inline end
 
-  # --- image
-  image_string : OTHER
+  # --- media
+  media_string : OTHER
               | EM_OPEN
               | EM_CLOSE
               | ITALIC_OPEN
@@ -68,18 +68,26 @@ class InlineParser
               | FOOTNOTE_CLOSE
               | VERB_OPEN
 	      | VERB_CLOSE
-              | IMAGE_OPEN
+              | MEDIA_OPEN
 
-  image_strings :  image_strings image_string { val.join }
-                |  image_string {
-		     unless @options[:image_base].nil? || @options[:image_base].empty?
-  		       val[0] = File.join(@options[:image_base],val[0]) unless val[0] =~ /^.*:\/\/.*/
+  media_strings :  media_strings media_string { val.join }
+                |  media_string {
+		     unless @options[:media_directory].nil? || @options[:media_directory].empty?
+  		       val[0] = File.join(@options[:media_directory],val[0]) unless val[0] =~ /^.*:\/\/.*/
 		     end
 		     val[0]
 		}
-  image    : IMAGE_OPEN image_strings IMAGE_CLOSE { Image.new(val[1]) }
+  media    : MEDIA_OPEN media_strings MEDIA_CLOSE {
+	     mime = MimeMagic.by_extension(val[1].split(".").last)
+	     unless mime.nil?
+ 	       mediatype, subtype = mime.mediatype, mime.subtype
+	     else
+	       mediatype, subtype = "",""
+	     end
+             Media.new([val[1],mediatype,subtype])
+             }
 
-  # --- image end
+  # --- media end
   # --- ruby
   ruby_string : OTHER
               | EM_OPEN
@@ -92,8 +100,8 @@ class InlineParser
               | CODE_CLOSE
               | KBD_OPEN
               | KBD_CLOSE
-              | IMAGE_OPEN
-              | IMAGE_CLOSE
+              | MEDIA_OPEN
+              | MEDIA_CLOSE
               | MANUEDO_OPEN
               | MANUEDO_CLOSE
               | REFERENCE_OPEN
@@ -132,8 +140,8 @@ class InlineParser
                   | CODE_CLOSE
                   | KBD_OPEN
                   | KBD_CLOSE
-                  | IMAGE_OPEN
-                  | IMAGE_CLOSE
+                  | MEDIA_OPEN
+                  | MEDIA_CLOSE
                   | MANUEDO_OPEN
                   | MANUEDO_CLOSE
                   | REFERENCE_OPEN
@@ -229,8 +237,8 @@ class InlineParser
               | CODE_CLOSE
               | KBD_OPEN
               | KBD_CLOSE
-              | IMAGE_OPEN
-              | IMAGE_CLOSE
+              | MEDIA_OPEN
+              | MEDIA_CLOSE
               | MANUEDO_OPEN
               | MANUEDO_CLOSE
               | REFERENCE_OPEN
@@ -303,10 +311,10 @@ FOOTNOTE_OPEN_RE = /\A#{Regexp.quote(FOOTNOTE_OPEN)}/
 FOOTNOTE_CLOSE = ']))'
 FOOTNOTE_CLOSE_RE = /\A#{Regexp.quote(FOOTNOTE_CLOSE)}/
 
-IMAGE_OPEN = '(($'
-IMAGE_OPEN_RE = /\A#{Regexp.quote(IMAGE_OPEN)}/
-IMAGE_CLOSE = '$))'
-IMAGE_CLOSE_RE = /\A#{Regexp.quote(IMAGE_CLOSE)}/
+MEDIA_OPEN = '(($'
+MEDIA_OPEN_RE = /\A#{Regexp.quote(MEDIA_OPEN)}/
+MEDIA_CLOSE = '$))'
+MEDIA_CLOSE_RE = /\A#{Regexp.quote(MEDIA_CLOSE)}/
 
 LABEL_OPEN = '((>'
 LABEL_OPEN_RE = /\A#{Regexp.quote(LABEL_OPEN)}/
@@ -349,7 +357,7 @@ MANUEDO_CLOSE_RE = /\A#{Regexp.quote(MANUEDO_CLOSE)}/
 #other_re_mode = Regexp::EXTENDED
 other_re_mode = Regexp::MULTILINE
 OTHER_RE = Regexp.new(
-                      "\\A.+?(?=#{Regexp.quote(EM_OPEN)}|#{Regexp.quote(EM_CLOSE)}|#{Regexp.quote(ITALIC_OPEN)}|#{Regexp.quote(ITALIC_CLOSE)}|#{Regexp.quote(STRIKE_OPEN)}|#{Regexp.quote(STRIKE_CLOSE)}|#{Regexp.quote(CODE_OPEN)}|#{Regexp.quote(CODE_CLOSE)}|#{Regexp.quote(KBD_OPEN)}|#{Regexp.quote(KBD_CLOSE)}|#{Regexp.quote(FOOTNOTE_OPEN)}|#{Regexp.quote(FOOTNOTE_CLOSE)}|#{Regexp.quote(RUBY_OPEN)}|#{Regexp.quote(RUBY_CLOSE)}|#{Regexp.quote(VARIABLE_OPEN)}|#{Regexp.quote(VARIABLE_CLOSE)}|#{Regexp.quote(IMAGE_OPEN)}|#{Regexp.quote(IMAGE_CLOSE)}|#{Regexp.quote(LABEL_OPEN)}|#{Regexp.quote(LABEL_CLOSE)}|#{Regexp.quote(LABEL_LINK_OPEN)}|#{Regexp.quote(LABEL_LINK_CLOSE)}|#{Regexp.quote(LABEL_HTML_OPEN)}|#{Regexp.quote(LABEL_HTML_CLOSE)}|#{Regexp.quote(REFERENCE_OPEN)}|#{Regexp.quote(REFERENCE_CLOSE)}|#{Regexp.quote(REFERENCE_HTML_OPEN)}|#{Regexp.quote(REFERENCE_HTML_CLOSE)}|#{Regexp.quote(MANUEDO_OPEN)}|#{Regexp.quote(MANUEDO_CLOSE)}|#{Regexp.quote(VERB_OPEN)}|#{Regexp.quote(VERB_CLOSE)})", other_re_mode)
+                      "\\A.+?(?=#{Regexp.quote(EM_OPEN)}|#{Regexp.quote(EM_CLOSE)}|#{Regexp.quote(ITALIC_OPEN)}|#{Regexp.quote(ITALIC_CLOSE)}|#{Regexp.quote(STRIKE_OPEN)}|#{Regexp.quote(STRIKE_CLOSE)}|#{Regexp.quote(CODE_OPEN)}|#{Regexp.quote(CODE_CLOSE)}|#{Regexp.quote(KBD_OPEN)}|#{Regexp.quote(KBD_CLOSE)}|#{Regexp.quote(FOOTNOTE_OPEN)}|#{Regexp.quote(FOOTNOTE_CLOSE)}|#{Regexp.quote(RUBY_OPEN)}|#{Regexp.quote(RUBY_CLOSE)}|#{Regexp.quote(VARIABLE_OPEN)}|#{Regexp.quote(VARIABLE_CLOSE)}|#{Regexp.quote(MEDIA_OPEN)}|#{Regexp.quote(MEDIA_CLOSE)}|#{Regexp.quote(LABEL_OPEN)}|#{Regexp.quote(LABEL_CLOSE)}|#{Regexp.quote(LABEL_LINK_OPEN)}|#{Regexp.quote(LABEL_LINK_CLOSE)}|#{Regexp.quote(LABEL_HTML_OPEN)}|#{Regexp.quote(LABEL_HTML_CLOSE)}|#{Regexp.quote(REFERENCE_OPEN)}|#{Regexp.quote(REFERENCE_CLOSE)}|#{Regexp.quote(REFERENCE_HTML_OPEN)}|#{Regexp.quote(REFERENCE_HTML_CLOSE)}|#{Regexp.quote(MANUEDO_OPEN)}|#{Regexp.quote(MANUEDO_CLOSE)}|#{Regexp.quote(VERB_OPEN)}|#{Regexp.quote(VERB_CLOSE)})", other_re_mode)
 
 def parse(src)
   @src = StringScanner.new(Array(src).join)
@@ -478,14 +486,14 @@ def next_token
     puts "i: FOOTNOTE_CLOSE: #{ret}" if @view_token_type
     @pre << ret
     [:FOOTNOTE_CLOSE, ret]
-  elsif ret = @src.scan(IMAGE_OPEN_RE)
-    puts "i: IMAGE_OPEN: #{ret}" if @view_token_type
+  elsif ret = @src.scan(MEDIA_OPEN_RE)
+    puts "i: MEDIA_OPEN: #{ret}" if @view_token_type
     @pre << ret
-    [:IMAGE_OPEN, ret]
-  elsif ret = @src.scan(IMAGE_CLOSE_RE)
-    puts "i: IMAGE_CLOSE: #{ret}" if @view_token_type
+    [:MEDIA_OPEN, ret]
+  elsif ret = @src.scan(MEDIA_CLOSE_RE)
+    puts "i: MEDIA_CLOSE: #{ret}" if @view_token_type
     @pre << ret
-    [:IMAGE_CLOSE, ret]
+    [:MEDIA_CLOSE, ret]
   elsif ret = @src.scan(MANUEDO_OPEN_RE)
     puts "i: MANUEDO_OPEN: #{ret}" if @view_token_type
     @pre << ret
@@ -510,6 +518,7 @@ end
 ---- header
 require "parserutility"
 require 'strscan'
+require 'mimemagic'
 require 'erb'
 require 'rafelement'
 

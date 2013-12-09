@@ -8,13 +8,14 @@ require 'racc/parser.rb'
 
 require "parserutility"
 require 'strscan'
+require 'mimemagic'
 require 'erb'
 require 'rafelement'
 
 module Raf
 class InlineParser < Racc::Parser
 
-module_eval(<<'...end rafinlineparser.ry/module_eval...', 'rafinlineparser.ry', 264)
+module_eval(<<'...end rafinlineparser.ry/module_eval...', 'rafinlineparser.ry', 272)
 include ParserUtility
 
 EM_OPEN = '((*'
@@ -57,10 +58,10 @@ FOOTNOTE_OPEN_RE = /\A#{Regexp.quote(FOOTNOTE_OPEN)}/
 FOOTNOTE_CLOSE = ']))'
 FOOTNOTE_CLOSE_RE = /\A#{Regexp.quote(FOOTNOTE_CLOSE)}/
 
-IMAGE_OPEN = '(($'
-IMAGE_OPEN_RE = /\A#{Regexp.quote(IMAGE_OPEN)}/
-IMAGE_CLOSE = '$))'
-IMAGE_CLOSE_RE = /\A#{Regexp.quote(IMAGE_CLOSE)}/
+MEDIA_OPEN = '(($'
+MEDIA_OPEN_RE = /\A#{Regexp.quote(MEDIA_OPEN)}/
+MEDIA_CLOSE = '$))'
+MEDIA_CLOSE_RE = /\A#{Regexp.quote(MEDIA_CLOSE)}/
 
 LABEL_OPEN = '((>'
 LABEL_OPEN_RE = /\A#{Regexp.quote(LABEL_OPEN)}/
@@ -103,7 +104,7 @@ MANUEDO_CLOSE_RE = /\A#{Regexp.quote(MANUEDO_CLOSE)}/
 #other_re_mode = Regexp::EXTENDED
 other_re_mode = Regexp::MULTILINE
 OTHER_RE = Regexp.new(
-                      "\\A.+?(?=#{Regexp.quote(EM_OPEN)}|#{Regexp.quote(EM_CLOSE)}|#{Regexp.quote(ITALIC_OPEN)}|#{Regexp.quote(ITALIC_CLOSE)}|#{Regexp.quote(STRIKE_OPEN)}|#{Regexp.quote(STRIKE_CLOSE)}|#{Regexp.quote(CODE_OPEN)}|#{Regexp.quote(CODE_CLOSE)}|#{Regexp.quote(KBD_OPEN)}|#{Regexp.quote(KBD_CLOSE)}|#{Regexp.quote(FOOTNOTE_OPEN)}|#{Regexp.quote(FOOTNOTE_CLOSE)}|#{Regexp.quote(RUBY_OPEN)}|#{Regexp.quote(RUBY_CLOSE)}|#{Regexp.quote(VARIABLE_OPEN)}|#{Regexp.quote(VARIABLE_CLOSE)}|#{Regexp.quote(IMAGE_OPEN)}|#{Regexp.quote(IMAGE_CLOSE)}|#{Regexp.quote(LABEL_OPEN)}|#{Regexp.quote(LABEL_CLOSE)}|#{Regexp.quote(LABEL_LINK_OPEN)}|#{Regexp.quote(LABEL_LINK_CLOSE)}|#{Regexp.quote(LABEL_HTML_OPEN)}|#{Regexp.quote(LABEL_HTML_CLOSE)}|#{Regexp.quote(REFERENCE_OPEN)}|#{Regexp.quote(REFERENCE_CLOSE)}|#{Regexp.quote(REFERENCE_HTML_OPEN)}|#{Regexp.quote(REFERENCE_HTML_CLOSE)}|#{Regexp.quote(MANUEDO_OPEN)}|#{Regexp.quote(MANUEDO_CLOSE)}|#{Regexp.quote(VERB_OPEN)}|#{Regexp.quote(VERB_CLOSE)})", other_re_mode)
+                      "\\A.+?(?=#{Regexp.quote(EM_OPEN)}|#{Regexp.quote(EM_CLOSE)}|#{Regexp.quote(ITALIC_OPEN)}|#{Regexp.quote(ITALIC_CLOSE)}|#{Regexp.quote(STRIKE_OPEN)}|#{Regexp.quote(STRIKE_CLOSE)}|#{Regexp.quote(CODE_OPEN)}|#{Regexp.quote(CODE_CLOSE)}|#{Regexp.quote(KBD_OPEN)}|#{Regexp.quote(KBD_CLOSE)}|#{Regexp.quote(FOOTNOTE_OPEN)}|#{Regexp.quote(FOOTNOTE_CLOSE)}|#{Regexp.quote(RUBY_OPEN)}|#{Regexp.quote(RUBY_CLOSE)}|#{Regexp.quote(VARIABLE_OPEN)}|#{Regexp.quote(VARIABLE_CLOSE)}|#{Regexp.quote(MEDIA_OPEN)}|#{Regexp.quote(MEDIA_CLOSE)}|#{Regexp.quote(LABEL_OPEN)}|#{Regexp.quote(LABEL_CLOSE)}|#{Regexp.quote(LABEL_LINK_OPEN)}|#{Regexp.quote(LABEL_LINK_CLOSE)}|#{Regexp.quote(LABEL_HTML_OPEN)}|#{Regexp.quote(LABEL_HTML_CLOSE)}|#{Regexp.quote(REFERENCE_OPEN)}|#{Regexp.quote(REFERENCE_CLOSE)}|#{Regexp.quote(REFERENCE_HTML_OPEN)}|#{Regexp.quote(REFERENCE_HTML_CLOSE)}|#{Regexp.quote(MANUEDO_OPEN)}|#{Regexp.quote(MANUEDO_CLOSE)}|#{Regexp.quote(VERB_OPEN)}|#{Regexp.quote(VERB_CLOSE)})", other_re_mode)
 
 def parse(src)
   @src = StringScanner.new(Array(src).join)
@@ -232,14 +233,14 @@ def next_token
     puts "i: FOOTNOTE_CLOSE: #{ret}" if @view_token_type
     @pre << ret
     [:FOOTNOTE_CLOSE, ret]
-  elsif ret = @src.scan(IMAGE_OPEN_RE)
-    puts "i: IMAGE_OPEN: #{ret}" if @view_token_type
+  elsif ret = @src.scan(MEDIA_OPEN_RE)
+    puts "i: MEDIA_OPEN: #{ret}" if @view_token_type
     @pre << ret
-    [:IMAGE_OPEN, ret]
-  elsif ret = @src.scan(IMAGE_CLOSE_RE)
-    puts "i: IMAGE_CLOSE: #{ret}" if @view_token_type
+    [:MEDIA_OPEN, ret]
+  elsif ret = @src.scan(MEDIA_CLOSE_RE)
+    puts "i: MEDIA_CLOSE: #{ret}" if @view_token_type
     @pre << ret
-    [:IMAGE_CLOSE, ret]
+    [:MEDIA_CLOSE, ret]
   elsif ret = @src.scan(MANUEDO_OPEN_RE)
     puts "i: MANUEDO_OPEN: #{ret}" if @view_token_type
     @pre << ret
@@ -639,8 +640,8 @@ racc_token_table = {
   :RUBY_CLOSE => 23,
   :VARIABLE_OPEN => 24,
   :VARIABLE_CLOSE => 25,
-  :IMAGE_OPEN => 26,
-  :IMAGE_CLOSE => 27,
+  :MEDIA_OPEN => 26,
+  :MEDIA_CLOSE => 27,
   :MANUEDO_OPEN => 28,
   :MANUEDO_CLOSE => 29,
   :OTHER => 30 }
@@ -692,8 +693,8 @@ Racc_token_to_s_table = [
   "RUBY_CLOSE",
   "VARIABLE_OPEN",
   "VARIABLE_CLOSE",
-  "IMAGE_OPEN",
-  "IMAGE_CLOSE",
+  "MEDIA_OPEN",
+  "MEDIA_CLOSE",
   "MANUEDO_OPEN",
   "MANUEDO_CLOSE",
   "OTHER",
@@ -712,12 +713,12 @@ Racc_token_to_s_table = [
   "ruby",
   "variable",
   "footnote",
-  "image",
+  "media",
   "verb",
   "manuedo",
   "normal_strings",
-  "image_string",
-  "image_strings",
+  "media_string",
+  "media_strings",
   "ruby_string",
   "ruby_strings",
   "variable_string",
@@ -887,17 +888,24 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 72)
 
 module_eval(<<'.,.,', 'rafinlineparser.ry', 74)
   def _reduce_55(val, _values)
-    		     unless @options[:image_base].nil? || @options[:image_base].empty?
-  		       val[0] = File.join(@options[:image_base],val[0]) unless val[0] =~ /^.*:\/\/.*/
+    		     unless @options[:media_directory].nil? || @options[:media_directory].empty?
+  		       val[0] = File.join(@options[:media_directory],val[0]) unless val[0] =~ /^.*:\/\/.*/
 		     end
 		     val[0]
 		
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 79)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 80)
   def _reduce_56(val, _values)
-     Image.new(val[1]) 
+    	     mime = MimeMagic.by_extension(val[1].split(".").last)
+	     unless mime.nil?
+ 	       mediatype, subtype = mime.mediatype, mime.subtype
+	     else
+	       mediatype, subtype = "",""
+	     end
+             Media.new([val[1],mediatype,subtype])
+             
   end
 .,.,
 
@@ -953,19 +961,19 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 79)
 
 # reduce 82 omitted
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 110)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 118)
   def _reduce_83(val, _values)
      val.join 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 111)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 119)
   def _reduce_84(val, _values)
      val[0] 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 114)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 122)
   def _reduce_85(val, _values)
                       base, text = val[1].split("|",2)
                   text ||= base
@@ -1032,19 +1040,19 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 114)
 
 # reduce 113 omitted
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 152)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 160)
   def _reduce_114(val, _values)
      val.join 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 153)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 161)
   def _reduce_115(val, _values)
      val[0] 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 156)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 164)
   def _reduce_116(val, _values)
                       base, text = val[1].split("=",2)
 		  @variables ||= {}
@@ -1061,31 +1069,31 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 156)
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 170)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 178)
   def _reduce_117(val, _values)
      Manuedo.new(val[1]) 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 175)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 183)
   def _reduce_118(val, _values)
      val[0] 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 178)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 186)
   def _reduce_119(val, _values)
      val.join 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 179)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 187)
   def _reduce_120(val, _values)
      val[0] 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 182)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 190)
   def _reduce_121(val, _values)
               label, title = val[1].split("|",2)
           title ||= label
@@ -1096,25 +1104,25 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 182)
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 191)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 199)
   def _reduce_122(val, _values)
      val[0] 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 193)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 201)
   def _reduce_123(val, _values)
      val.join 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 194)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 202)
   def _reduce_124(val, _values)
      val[0] 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 197)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 205)
   def _reduce_125(val, _values)
                       label, title = val[1].split("|",2)
                   title ||= label
@@ -1123,25 +1131,25 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 197)
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 204)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 212)
   def _reduce_126(val, _values)
      val[0] 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 206)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 214)
   def _reduce_127(val, _values)
      val.join 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 207)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 215)
   def _reduce_128(val, _values)
      val[0] 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 210)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 218)
   def _reduce_129(val, _values)
                       title, uri = val[1].split("|",2)
                   uri ||= title
@@ -1212,31 +1220,31 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 210)
 
 # reduce 158 omitted
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 250)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 258)
   def _reduce_159(val, _values)
      val 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 252)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 260)
   def _reduce_160(val, _values)
       Verb.new(val[1])
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 256)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 264)
   def _reduce_161(val, _values)
      Plain.new(val[0]) 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 257)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 265)
   def _reduce_162(val, _values)
       Plain.new([val[0].contents, val[1]]) 
   end
 .,.,
 
-module_eval(<<'.,.,', 'rafinlineparser.ry', 259)
+module_eval(<<'.,.,', 'rafinlineparser.ry', 267)
   def _reduce_163(val, _values)
      val[0] 
   end
