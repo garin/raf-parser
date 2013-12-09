@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = "raf-parser"
-  spec.version       = `cat VERSION` 
+  spec.version       = `cat VERSION`
   spec.authors       = ["garin"]
   spec.email         = ["garin54@gmail.com"]
   spec.description   = %q{raf is simple document format}
@@ -17,4 +17,5 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
+  spec.add_dependency "mimemagic"
 end
