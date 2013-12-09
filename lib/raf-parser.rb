@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) garin <garin54@gmail.com> 2011-2013
 # See the included file COPYING for details.
+require 'bundler/setup'
 require "rafblockparser.tab"
 
 module Raf
