@@ -1153,9 +1153,9 @@ module_eval(<<'.,.,', 'rafinlineparser.ry', 218)
   def _reduce_129(val, _values)
                       title, uri = val[1].split("|",2)
                   uri ||= title
-                  if uri.strip[-2,2] == ".%" and ! @options[:suffix].nil?
+                  if uri.strip[-2,2] == ".%" and ! @options[:extension].nil?
 		    uri.slice!(-2,2)
-		    uri = "#{uri}#{@options[:suffix]}"
+		    uri = "#{uri}#{@options[:extension]}"
 		  end
                   Reference.new([title, uri])
                 
