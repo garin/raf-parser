@@ -1,3 +1,16 @@
+== 0.2.3 2013-12-10
+* new: メディアファイルを置くディレクトリを指定する @options[:media_directory] を 追加
+* new: ラベルリンク(LabelLink)用の構文((=..=))を追加
+* new: .% 構文用の @options[:extension] を追加
+* new: URI形式で指定した Reference の拡張子に .% 構文の追加
+* new: 依存関係に mimemagic パッケージを追加
+* change: IMAGEエレメントを廃止して、MEDIAエレメントを追加
+* change: label_link の label の先頭から "#" を削除
+* change: リファレンス構文((<..>)) からラベルリンクの機能を削除
+* change: reference を http[s]:// だけでなく URI 形式は全て外部への参照とするように変更
+* change: variables書式((@..@))の変数定義でも値を表示するように変更
+* change: ERBで可能な処理をセーフレベル4に限定
+
 == 0.2.2 2013-12-05
 * 変数定義の VARIABLE((@..|..@))書式を追加
 * 空文字を返す Empty クラスを追加
