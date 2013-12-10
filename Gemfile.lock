@@ -1,16 +1,18 @@
 PATH
   remote: .
   specs:
-    raf (1.0.2)
-      raf-parser (~> 0.2.1)
-      raf2html (~> 0.0.5)
+    raf (1.0.5)
+      raf-parser (~> 0.2.3)
+      raf2html (~> 0.0.8)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    raf-parser (0.2.1)
-    raf2html (0.0.5)
-      raf-parser (~> 0.2.0)
+    mimemagic (0.2.1)
+    raf-parser (0.2.3)
+      mimemagic
+    raf2html (0.0.8)
+      raf-parser (>= 0.2.3)
     rake (10.1.0)
 
 PLATFORMS
